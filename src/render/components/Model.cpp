@@ -1,4 +1,4 @@
-#include "render/Model.h"
+#include "render/components/Model.h"
 
 #include <iostream>
 
@@ -23,7 +23,7 @@ PE::Model::Model(bool drawStatic):
 {
 }
 
-void PE::Model::init()
+void PE::Model::onStart()
 {
 	//manually load shader
 	_shader.compile("./shaders/default.vert", "./shaders/default.frag");
@@ -97,7 +97,12 @@ void PE::Model::render()
 	glBindVertexArray(0);
 }
 
-void PE::Model::cleanUp()
+void PE::Model::update()
+{
+
+}
+
+void PE::Model::onDestroy()
 {
 	glDeleteBuffers(1, &_vbo);
 	glDeleteVertexArrays(1, &_vao);

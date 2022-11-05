@@ -4,13 +4,14 @@
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\ClientMain.cpp" />
-    <ClCompile Include="src\render\Model.cpp" />
+    <ClCompile Include="src\render\components\Model.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
+    <ClCompile Include="src\render\Renderable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\render\Model.h" />
+    <ClInclude Include="include\render\components\Model.h" />
     <ClInclude Include="include\render\Renderable.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\Application.h" />

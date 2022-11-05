@@ -22,14 +22,6 @@ void PE::Renderer::initialize()
 	//various opengl settings
 	glCullFace(GL_BACK); //cull backfaces to reduce render time
 	glEnable(GL_DEPTH_TEST); //allow depth testing for 3D
-
-	//temporary for testing
-	_renderables.push_back(&_model);
-
-	//initalize all renderables
-	for (auto renderable : _renderables) {
-		renderable->init();
-	}
 }
 
 void PE::Renderer::render()
@@ -46,9 +38,6 @@ void PE::Renderer::render()
 void PE::Renderer::cleanUp()
 {
 	std::cout << "Closing renderer" << std::endl;
-	for (auto renderable : _renderables) {
-		renderable->cleanUp();
-	}
 }
 
 void PE::Renderer::addRenderable(Renderable* renderable) {

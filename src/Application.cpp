@@ -1,7 +1,15 @@
 #include "Application.h"
 
+#include "render/components/Model.h"
+
 int PE::Application::run(int argc, char** argv)
 {
+	//temporarily create a game object with a model
+	GameObject g;
+	Model m;
+	g.addComponent(&m);
+	createGameObject(g);
+
 	//create the window
 	if (!glfwInit()) {
 		throw "Failed to initialize glfw";
@@ -23,7 +31,19 @@ int PE::Application::run(int argc, char** argv)
 	
 	_renderer.initialize();
 
+	//initialize all game objects
+	for (int i = 0; i < _gameObjects.size(); i++) {
+		_gameObjects[i].get()->onStart();
+	}
+
+	_initialized = true;
+
 	while (!glfwWindowShouldClose(_window)) {
+		//game object updates
+		for (int i = 0; i < _gameObjects.size(); i++) {
+			_gameObjects[i].get()->update();
+		}
+
 		//call render pass
 		_renderer.render();
 
@@ -38,8 +58,30 @@ int PE::Application::run(int argc, char** argv)
 	return 0;
 }
 
+void PE::Application::createGameObject(GameObject base) {
+	//create a unique pointer from the base
+	std::unique_ptr<GameObject> temp(new GameObject(base));
+	
+	//check if any of its child components are renderables
+	for (auto comp : temp.get()->_components) {
+		if (Renderable* r = dynamic_cast<Renderable*>(comp)) {
+			_renderer.addRenderable(r);
+		}
+	}
+
+	if (_initialized)
+		temp.get()->onStart();
+
+	//add to the list
+	_gameObjects.push_back(std::move(temp));
+}
+
 PE::Application::~Application()
 {
+	for (int i = 0; i < _gameObjects.size(); i++) {
+		_gameObjects[i].get()->onDestroy();
+	}
+
 	_renderer.cleanUp();
 	glfwTerminate();
 }

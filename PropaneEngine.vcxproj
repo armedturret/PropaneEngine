@@ -23,7 +23,8 @@
     <ClCompile Include="src\ClientMain.cpp" />
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
-    <ClCompile Include="src\render\Model.cpp" />
+    <ClCompile Include="src\render\components\Model.cpp" />
+    <ClCompile Include="src\render\Renderable.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
   </ItemGroup>
@@ -32,7 +33,7 @@
     <ClInclude Include="include\core\Component.h" />
     <ClInclude Include="include\core\GameObject.h" />
     <ClInclude Include="include\core\Transform.h" />
-    <ClInclude Include="include\render\Model.h" />
+    <ClInclude Include="include\render\components\Model.h" />
     <ClInclude Include="include\render\Renderable.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\render\Shader.h" />
