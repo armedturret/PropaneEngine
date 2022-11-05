@@ -6,6 +6,8 @@
     <ClCompile Include="src\ClientMain.cpp" />
     <ClCompile Include="src\render\Model.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
+    <ClCompile Include="src\core\GameObject.cpp" />
+    <ClCompile Include="src\core\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\render\Model.h" />
@@ -13,5 +15,8 @@
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\render\Shader.h" />
+    <ClInclude Include="include\core\GameObject.h" />
+    <ClInclude Include="include\core\Component.h" />
+    <ClInclude Include="include\core\Transform.h" />
   </ItemGroup>
 </Project>

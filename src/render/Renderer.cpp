@@ -19,10 +19,11 @@ void PE::Renderer::initialize()
 	//solid black background
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	//cull backfaces to reduce render time
-	glCullFace(GL_BACK);
+	//various opengl settings
+	glCullFace(GL_BACK); //cull backfaces to reduce render time
+	glEnable(GL_DEPTH_TEST); //allow depth testing for 3D
 
-	//create a test model for now
+	//temporary for testing
 	_renderables.push_back(&_model);
 
 	//initalize all renderables
@@ -48,4 +49,8 @@ void PE::Renderer::cleanUp()
 	for (auto renderable : _renderables) {
 		renderable->cleanUp();
 	}
+}
+
+void PE::Renderer::addRenderable(Renderable* renderable) {
+	_renderables.push_back(renderable);
 }

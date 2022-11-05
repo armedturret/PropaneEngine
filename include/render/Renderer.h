@@ -11,7 +11,7 @@ namespace PE {
 		void initialize();
 		void render();
 		void cleanUp();
-
+		void addRenderable(Renderable* renderable);
 	private:
 		std::vector<Renderable*> _renderables;
 

@@ -3,6 +3,10 @@
 #include <iostream>
 
 #include <gl/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "render/Shader.h"
 
@@ -12,7 +16,8 @@ PE::Model::Model(bool drawStatic):
 	_drawStatic(drawStatic),
 	_shader(),
 	_vao(0),
-	_vbo(0)
+	_vbo(0),
+	_transform()
 {
 }
 
@@ -54,12 +59,34 @@ void PE::Model::init()
 
 	//unuse the vao to prevent accidental modification
 	glBindVertexArray(0);
+
+	_transform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+	_transform.setRotation(glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
 void PE::Model::render()
 {
+	//enable the shader and vao
 	_shader.useShader();
 	glBindVertexArray(_vao);
+
+	//find the mvp and calculate the camera
+	int mvpLocation = _shader.getUniformLocation("mvp");
+	if (mvpLocation != -1) {
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), _transform.getPosition())
+			* glm::toMat4(_transform.getRotation())
+			* glm::scale(glm::mat4(1.0f), _transform.getScale());
+
+		//uses camera pos, target pos, and up direction
+		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 640.0f / 480.0f, 0.1f, 100.0f);
+		glm::mat4 mvp = projection * view * model;
+
+		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+	}
 
 	//draw 3 verts
 	glDrawArrays(GL_TRIANGLES, 0, 3);

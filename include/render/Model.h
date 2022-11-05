@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Renderable.h"
-
 #include "Shader.h"
+#include "core/Transform.h"
 
 namespace PE {
 	class Model : public Renderable {
@@ -18,6 +18,7 @@ namespace PE {
 
 		unsigned int _vbo, _vao;
 
+		Transform _transform;
 		Shader _shader;
 	};
 }
