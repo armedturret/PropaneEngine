@@ -12,6 +12,7 @@ int PE::Application::run(int argc, char** argv)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); //forward compatiblity
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //use modern opengl
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //do not allow window resizing
 
 	_window = glfwCreateWindow(640, 480, "Skeggy 3 Real??????!?!?", NULL, NULL);
 	if (!_window) {

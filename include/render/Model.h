@@ -12,7 +12,7 @@ namespace PE {
 		void cleanUp() override;
 
 	private:
-		unsigned int _vbo;
+		unsigned int _vbo, _vao;
 
 		Shader _shader;
 	};

@@ -16,8 +16,11 @@ void PE::Renderer::initialize()
 		throw "GLEW failed to initialize";
 	}
 
-	//give it the color of blood
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	//solid black background
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//cull backfaces to reduce render time
+	glCullFace(GL_BACK);
 
 	//create a test model for now
 	_renderables.push_back(&_model);
@@ -30,13 +33,13 @@ void PE::Renderer::initialize()
 
 void PE::Renderer::render()
 {
+	//clear window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	//render all renderables
 	for (auto renderable : _renderables) {
 		renderable->render();
 	}
-
-	//clear window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void PE::Renderer::cleanUp()
