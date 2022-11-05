@@ -8,6 +8,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include <GLFW/glfw3.h>
+
 #include "render/Shader.h"
 
 using namespace std;
@@ -59,13 +61,13 @@ void PE::Model::init()
 
 	//unuse the vao to prevent accidental modification
 	glBindVertexArray(0);
-
-	_transform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-	_transform.setRotation(glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
 void PE::Model::render()
 {
+	_transform.setRotation(glm::angleAxis(glm::radians(90.0f * (float)glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f)));
+	_transform.setScale(glm::vec3(1.0f, ((sin(glfwGetTime()) + 1.0f) / 2.0f) * 2.0f, 1.0f));
+
 	//enable the shader and vao
 	_shader.useShader();
 	glBindVertexArray(_vao);
