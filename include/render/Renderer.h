@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Renderable.h"
+#include "Model.h"
 
 namespace PE {
 	class Renderer {
@@ -13,5 +14,7 @@ namespace PE {
 
 	private:
 		std::vector<Renderable*> _renderables;
+
+		Model _model;
 	};
 }

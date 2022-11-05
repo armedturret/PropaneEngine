@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="include\render\Renderable.h" />
-    <ClInclude Include="include\render\Renderer.h" />
-    <ClInclude Include="include\Application.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\ClientMain.cpp" />
+    <ClCompile Include="src\render\Model.cpp" />
+    <ClCompile Include="src\render\Shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\render\Model.h" />
+    <ClInclude Include="include\render\Renderable.h" />
+    <ClInclude Include="include\render\Renderer.h" />
+    <ClInclude Include="include\Application.h" />
+    <ClInclude Include="include\render\Shader.h" />
   </ItemGroup>
 </Project>

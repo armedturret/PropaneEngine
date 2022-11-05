@@ -18,6 +18,14 @@ void PE::Renderer::initialize()
 
 	//give it the color of blood
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+	//create a test model for now
+	_renderables.push_back(&_model);
+
+	//initalize all renderables
+	for (auto renderable : _renderables) {
+		renderable->init();
+	}
 }
 
 void PE::Renderer::render()
@@ -34,4 +42,7 @@ void PE::Renderer::render()
 void PE::Renderer::cleanUp()
 {
 	std::cout << "Closing renderer" << std::endl;
+	for (auto renderable : _renderables) {
+		renderable->cleanUp();
+	}
 }

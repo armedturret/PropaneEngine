@@ -34,6 +34,7 @@ int PE::Application::run(int argc, char** argv)
 	}
 
 	//don't bother with clean up since called out of scope
+	return 0;
 }
 
 PE::Application::~Application()
