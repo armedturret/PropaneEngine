@@ -25,8 +25,12 @@ namespace PE {
 
 		~Application();
 
-		Renderer* getRenderer();
+		Renderer& getRenderer();
 		
+		//returns width, height vector
+		glm::ivec2 getDimensions() const;
+		void setDimensions(glm::ivec2 dimensions);
+
 		Application(Application const&) = delete;
 		void operator=(Application const&) = delete;
 	private:
@@ -34,6 +38,7 @@ namespace PE {
 
 		//window stuff
 		GLFWwindow* _window;
+		glm::ivec2 _dimensions;
 
 		std::vector<std::shared_ptr<GameObject>> _gameObjects;
 

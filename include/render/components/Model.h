@@ -10,7 +10,7 @@ namespace PE {
 		Model();
 
 		void onStart() override;
-		void render() override;
+		void render(Camera* camera) override;
 		void update() override;
 		void onDestroy() override;
 

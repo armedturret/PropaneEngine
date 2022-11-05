@@ -17,6 +17,13 @@ namespace PE {
 
 		glm::quat getRotation() const;
 		void setRotation(glm::quat rotation);
+
+		//gets the normalized forward vector in terms of the world (standard is X+)
+		glm::vec3 getForward() const;
+		//gets the normalized right vector in terms of the world (standarad is Z+)
+		glm::vec3 getRight() const;
+		//gets the normalized up vector in terms of the world (standard is Y+)
+		glm::vec3 getUp() const;
 	private:
 		glm::vec3 _position;
 		glm::vec3 _scale;

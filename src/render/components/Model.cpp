@@ -40,9 +40,12 @@ void PE::Model::onStart()
 
 	//create some temporary vertex data for testing reasons
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.f, 0.5f, 0.0f
+		0.0f, -0.5f, -0.5f,
+		0.0f, -0.5f, 0.5f,
+		0.0f, 0.5f, 0.5f,
+		0.0f, -0.5f, -0.5f,
+		0.0f, 0.5f, -0.5f,
+		0.0f, 0.5f, 0.5f,
 	};
 
 	//set the data for the vbo to be the verts
@@ -63,11 +66,8 @@ void PE::Model::onStart()
 	glBindVertexArray(0);
 }
 
-void PE::Model::render()
+void PE::Model::render(Camera* camera)
 {
-	_transform.setRotation(glm::angleAxis(glm::radians(90.0f * (float)glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f)));
-	_transform.setScale(glm::vec3(1.0f, ((sin(glfwGetTime()) + 1.0f) / 2.0f) * 2.0f, 1.0f));
-
 	//enable the shader and vao
 	_shader.useShader();
 	glBindVertexArray(_vao);
@@ -79,19 +79,13 @@ void PE::Model::render()
 			* glm::toMat4(_transform.getRotation())
 			* glm::scale(glm::mat4(1.0f), _transform.getScale());
 
-		//uses camera pos, target pos, and up direction
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
-			glm::vec3(0.0f, 0.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 640.0f / 480.0f, 0.1f, 100.0f);
-		glm::mat4 mvp = projection * view * model;
+		glm::mat4 mvp = camera->getProjectionMatrix() * camera->getLookMatrix() * model;
 
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 	}
 
 	//draw 3 verts
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//unbind to prevent accidental modification
 	glBindVertexArray(0);
@@ -99,7 +93,8 @@ void PE::Model::render()
 
 void PE::Model::update()
 {
-
+	//rotate around x axis
+	_transform.setRotation(glm::angleAxis(glm::radians(90.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.0f, 0.0f)));
 }
 
 void PE::Model::onDestroy()

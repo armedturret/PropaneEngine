@@ -1,5 +1,7 @@
 #include "render/Renderer.h"
 
+#include "core/components/Camera.h"
+
 #include <glm/glm.hpp>
 #include <gl/glew.h>
 using namespace glm;
@@ -29,9 +31,12 @@ void PE::Renderer::render()
 	//clear window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	if (_camera == nullptr)
+		throw "Attempting to render with no camera";
+
 	//render all renderables
 	for (auto renderable : _renderables) {
-		renderable->render();
+		renderable->render(_camera);
 	}
 }
 
@@ -40,6 +45,17 @@ void PE::Renderer::cleanUp()
 	std::cout << "Closing renderer" << std::endl;
 }
 
-void PE::Renderer::addRenderable(Renderable* renderable) {
+void PE::Renderer::addRenderable(Renderable* renderable) 
+{
 	_renderables.push_back(renderable);
+}
+
+void PE::Renderer::setCamera(Camera* camera) 
+{
+	_camera = camera;
+}
+
+PE::Camera* PE::Renderer::getCamera() const
+{
+	return _camera;
 }

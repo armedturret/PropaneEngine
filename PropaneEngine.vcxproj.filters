@@ -9,6 +9,7 @@
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
     <ClCompile Include="src\render\Renderable.cpp" />
+    <ClCompile Include="src\core\components\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\render\components\Model.h" />
@@ -19,5 +20,6 @@
     <ClInclude Include="include\core\GameObject.h" />
     <ClInclude Include="include\core\Component.h" />
     <ClInclude Include="include\core\Transform.h" />
+    <ClInclude Include="include\core\components\Camera.h" />
   </ItemGroup>
 </Project>

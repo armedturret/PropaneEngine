@@ -4,15 +4,19 @@
 
 PE::Application::Application() : _initialized(false),
 _renderer(),
-_window()
+_window(),
+_dimensions(640, 480)
 {
 
 }
 
 int PE::Application::run(int argc, char** argv)
 {
-	//temporarily create a game object with a model
+	//temporarily create a game object with a model and another with a camera
 	createGameObject()->addComponent<Model>();
+	GameObject* cameraObject = createGameObject();
+	cameraObject->addComponent<Camera>();
+	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
 
 	//create the window
 	if (!glfwInit()) {
@@ -26,7 +30,7 @@ int PE::Application::run(int argc, char** argv)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //use modern opengl
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //do not allow window resizing
 
-	_window = glfwCreateWindow(640, 480, "Skeggy 3 Real??????!?!?", NULL, NULL);
+	_window = glfwCreateWindow(_dimensions[0], _dimensions[1], "Skeggy 3 Real??????!?!?", NULL, NULL);
 	if (!_window) {
 		throw "Window failed to initialize";
 	}
@@ -62,6 +66,17 @@ int PE::Application::run(int argc, char** argv)
 	return 0;
 }
 
+glm::ivec2 PE::Application::getDimensions() const
+{
+	return _dimensions;
+}
+
+void PE::Application::setDimensions(glm::ivec2 dimensions)
+{
+	_dimensions = dimensions;
+	glfwSetWindowSize(_window, _dimensions[0], _dimensions[1]);
+}
+
 PE::GameObject* PE::Application::createGameObject() {
 	//create a unique pointer from the base
 	std::shared_ptr<GameObject> temp(new GameObject());
@@ -87,6 +102,6 @@ PE::Application::~Application()
 	glfwTerminate();
 }
 
-PE::Renderer* PE::Application::getRenderer() {
-	return &_renderer;
+PE::Renderer& PE::Application::getRenderer() {
+	return _renderer;
 }

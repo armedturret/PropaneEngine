@@ -33,6 +33,22 @@ glm::quat PE::Transform::getRotation() const
 	return _rotation;
 }
 
-void PE::Transform::setRotation(glm::quat rotation) {
+void PE::Transform::setRotation(glm::quat rotation) 
+{
 	_rotation = rotation;
+}
+
+glm::vec3 PE::Transform::getForward() const
+{
+	return glm::normalize(glm::rotate(_rotation, glm::vec3(1.0f, 0.0f, 0.0f)));
+}
+
+glm::vec3 PE::Transform::getRight() const
+{
+	return glm::normalize(glm::rotate(_rotation, glm::vec3(0.0f, 0.0f, 1.0f)));
+}
+
+glm::vec3 PE::Transform::getUp() const
+{
+	return glm::normalize(glm::rotate(_rotation, glm::vec3(0.0f, 1.0f, 0.0f)));
 }
