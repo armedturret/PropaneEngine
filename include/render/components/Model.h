@@ -7,7 +7,7 @@
 namespace PE {
 	class Model : public Renderable, public Component{
 	public:
-		Model(bool drawStatic = false);
+		Model();
 
 		void onStart() override;
 		void render() override;

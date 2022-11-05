@@ -4,8 +4,8 @@ using namespace PE;
 
 void PE::GameObject::onStart() 
 {
-	for (auto comp : _components) {
-		comp->onStart();
+	for (int i = 0; i < _components.size(); i++) {
+		_components[i].get()->onStart();
 	}
 
 	_initialized = true;
@@ -13,28 +13,22 @@ void PE::GameObject::onStart()
 
 void PE::GameObject::update() 
 {
-	for (auto comp : _components) {
-		comp->update();
+	for (int i = 0; i < _components.size(); i++) {
+		_components[i].get()->update();
 	}
 }
 
 void PE::GameObject::onDestroy() 
 {
-	for (auto comp : _components) {
-		comp->onDestroy();
+	for (int i = 0; i < _components.size(); i++) {
+		_components[i].get()->onDestroy();
 	}
 }
 
-//this is very bad and allows components to be associated with multiple objects, need to fix later
-void PE::GameObject::addComponent(Component* component)
+PE::GameObject::GameObject(): _initialized(false),
+_transform()
 {
-	component->_gameObject = this;
-	component->_transform = &_transform;
 
-	if (_initialized)
-		component->onStart();
-
-	_components.push_back(component);
 }
 
 Transform* PE::GameObject::getTransform() 

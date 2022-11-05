@@ -2,13 +2,17 @@
 
 #include "render/components/Model.h"
 
+PE::Application::Application() : _initialized(false),
+_renderer(),
+_window()
+{
+
+}
+
 int PE::Application::run(int argc, char** argv)
 {
 	//temporarily create a game object with a model
-	GameObject g;
-	Model m;
-	g.addComponent(&m);
-	createGameObject(g);
+	createGameObject()->addComponent<Model>();
 
 	//create the window
 	if (!glfwInit()) {
@@ -58,22 +62,19 @@ int PE::Application::run(int argc, char** argv)
 	return 0;
 }
 
-void PE::Application::createGameObject(GameObject base) {
+PE::GameObject* PE::Application::createGameObject() {
 	//create a unique pointer from the base
-	std::unique_ptr<GameObject> temp(new GameObject(base));
+	std::shared_ptr<GameObject> temp(new GameObject());
 	
-	//check if any of its child components are renderables
-	for (auto comp : temp.get()->_components) {
-		if (Renderable* r = dynamic_cast<Renderable*>(comp)) {
-			_renderer.addRenderable(r);
-		}
-	}
-
 	if (_initialized)
 		temp.get()->onStart();
 
+	GameObject* returnVal = temp.get();
+
 	//add to the list
 	_gameObjects.push_back(std::move(temp));
+
+	return returnVal;
 }
 
 PE::Application::~Application()
@@ -84,4 +85,8 @@ PE::Application::~Application()
 
 	_renderer.cleanUp();
 	glfwTerminate();
+}
+
+PE::Renderer* PE::Application::getRenderer() {
+	return &_renderer;
 }

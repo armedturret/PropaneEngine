@@ -12,17 +12,30 @@
 namespace PE {
 	class Application {
 	public:
+		static Application& getInstance() {
+			static Application instance;
+
+			return instance;
+		}
+
 		int run(int argc, char** argv);
 		
 		//creates a duplicate of the game object, adding it to the game objects list
-		void createGameObject(GameObject base);
+		GameObject* createGameObject();
 
 		~Application();
+
+		Renderer* getRenderer();
+		
+		Application(Application const&) = delete;
+		void operator=(Application const&) = delete;
 	private:
+		Application();
+
 		//window stuff
 		GLFWwindow* _window;
 
-		std::vector<std::unique_ptr<GameObject>> _gameObjects;
+		std::vector<std::shared_ptr<GameObject>> _gameObjects;
 
 		Renderer _renderer;
 		bool _initialized;

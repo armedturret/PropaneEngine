@@ -14,8 +14,8 @@
 
 using namespace std;
 
-PE::Model::Model(bool drawStatic):
-	_drawStatic(drawStatic),
+PE::Model::Model():
+	_drawStatic(false),
 	_shader(),
 	_vao(0),
 	_vbo(0),
