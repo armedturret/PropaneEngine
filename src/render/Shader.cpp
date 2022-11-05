@@ -8,6 +8,14 @@
 
 using namespace std;
 
+PE::Shader::Shader():
+	_vertShader(0),
+	_fragShader(0),
+	_shaderProgram(0)
+{
+
+}
+
 void PE::Shader::free()
 {
 	//delete all created objects
@@ -54,6 +62,16 @@ int PE::Shader::compile(std::string vertFile, std::string fragFile)
 void PE::Shader::useShader()
 {
 	glUseProgram(_shaderProgram);
+}
+
+int PE::Shader::getAttribLocation(std::string name) 
+{
+	return glGetAttribLocation(_shaderProgram, name.c_str());
+}
+
+int PE::Shader::getUniformLocation(std::string name) 
+{
+	return glGetUniformLocation(_shaderProgram, name.c_str());
 }
 
 int PE::Shader::compileShader(std::string sourceFile, unsigned int* shaderId)
