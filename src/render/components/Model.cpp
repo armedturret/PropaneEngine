@@ -40,10 +40,10 @@ void PE::Model::loadWithMaterial(std::shared_ptr<Material> material, bool drawSt
 	//create some temporary vertex data for testing reasons
 	Vertex vertices[] = {
 		{{0.0f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-		{{0.0f, -0.5f, 0.5f}, {0.0f, 1.0f}},
+		{{0.0f, -0.5f, 0.5f}, {1.0f, 0.0f}},
 		{{0.0f, 0.5f, 0.5f}, {1.0f, 1.0f}},
 		{{0.0f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-		{{0.0f, 0.5f, -0.5f}, {1.0f, 0.0f}},
+		{{0.0f, 0.5f, -0.5f}, {0.0f, 1.0f}},
 		{{0.0f, 0.5f, 0.5f}, {1.0f, 1.0f}}
 	};
 
@@ -111,7 +111,9 @@ void PE::Model::render(Camera* camera)
 void PE::Model::update()
 {
 	//rotate around x axis
-	getTransform()->setRotation(glm::angleAxis(glm::radians(90.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.0f, 0.0f)));
+	getTransform()->setRotation(glm::quat(glm::vec3(glm::radians(90.0f * (float)glfwGetTime() * 2.0f), 0.0f, 0.0f)));
+	//scale between 1.0 - 2.0
+	getTransform()->setScale(glm::vec3((glm::cos(glfwGetTime() * 3.0f) + 1.0f) / 2.0f + 1.0f));
 }
 
 void PE::Model::onDestroy()
