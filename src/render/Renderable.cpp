@@ -4,6 +4,7 @@
 
 #include <iostream>
 
-PE::Renderable::Renderable() {
+PE::Renderable::Renderable()
+{
 	Application::getInstance().getRenderer().addRenderable(this);
 }

@@ -1,6 +1,6 @@
 #include "core/Transform.h"
 
-PE::Transform::Transform():
+PE::Transform::Transform() :
 	_position(0.0f),
 	_rotation(),
 	_scale(1.0f)
@@ -33,7 +33,7 @@ glm::quat PE::Transform::getRotation() const
 	return _rotation;
 }
 
-void PE::Transform::setRotation(glm::quat rotation) 
+void PE::Transform::setRotation(glm::quat rotation)
 {
 	_rotation = rotation;
 }

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-PE::Shader::Shader():
+PE::Shader::Shader() :
 	_vertShader(0),
 	_fragShader(0),
 	_shaderProgram(0)
@@ -47,9 +47,10 @@ int PE::Shader::compile(std::string vertFile, std::string fragFile)
 	int success; // GL_TRUE if success
 	char infoLog[512];
 	glGetProgramiv(_shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
+	if (!success)
+	{
 		glGetProgramInfoLog(_shaderProgram, 512, NULL, infoLog);
-		cerr << "Failed to link shaders: "  << infoLog << endl;
+		cerr << "Failed to link shaders: " << infoLog << endl;
 		return -1;
 	}
 
@@ -64,12 +65,12 @@ void PE::Shader::useShader()
 	glUseProgram(_shaderProgram);
 }
 
-int PE::Shader::getAttribLocation(std::string name) 
+int PE::Shader::getAttribLocation(std::string name)
 {
 	return glGetAttribLocation(_shaderProgram, name.c_str());
 }
 
-int PE::Shader::getUniformLocation(std::string name) 
+int PE::Shader::getUniformLocation(std::string name)
 {
 	return glGetUniformLocation(_shaderProgram, name.c_str());
 }
@@ -78,7 +79,8 @@ int PE::Shader::compileShader(std::string sourceFile, unsigned int* shaderId)
 {
 	//load all the data into a string
 	ifstream shaderSource(sourceFile);
-	if (shaderSource.fail()) {
+	if (shaderSource.fail())
+	{
 		cerr << "Failed to find shader source file: " << sourceFile << endl;
 		return -1;
 	}
@@ -96,7 +98,8 @@ int PE::Shader::compileShader(std::string sourceFile, unsigned int* shaderId)
 	int success; // GL_TRUE if success
 	char infoLog[512];
 	glGetShaderiv(*shaderId, GL_COMPILE_STATUS, &success);
-	if (!success) {
+	if (!success)
+	{
 		glGetShaderInfoLog(*shaderId, 512, NULL, infoLog);
 		cerr << "Failed to compile shader from " << sourceFile << ": " << infoLog << endl;
 		return -1;

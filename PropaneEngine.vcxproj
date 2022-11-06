@@ -25,9 +25,11 @@
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
     <ClCompile Include="src\render\components\Model.cpp" />
+    <ClCompile Include="src\render\Material.cpp" />
     <ClCompile Include="src\render\Renderable.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
+    <ClCompile Include="src\render\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Application.h" />
@@ -36,9 +38,12 @@
     <ClInclude Include="include\core\GameObject.h" />
     <ClInclude Include="include\core\Transform.h" />
     <ClInclude Include="include\render\components\Model.h" />
+    <ClInclude Include="include\render\Material.h" />
     <ClInclude Include="include\render\Renderable.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\render\Shader.h" />
+    <ClInclude Include="include\render\stb_image.h" />
+    <ClInclude Include="include\render\Texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -18,7 +18,7 @@ namespace PE {
 		void setCamera(Camera* camera);
 	private:
 		std::vector<Renderable*> _renderables;
-		
+
 		Camera* _camera;
 	};
 }

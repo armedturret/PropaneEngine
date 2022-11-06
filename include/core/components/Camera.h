@@ -15,7 +15,7 @@ namespace PE {
 		float getFov() const;
 		void setFov(float fov);
 
-		float getNearPlane () const;
+		float getNearPlane() const;
 		void setNearPlane(float val);
 
 		float getFarPlane() const;

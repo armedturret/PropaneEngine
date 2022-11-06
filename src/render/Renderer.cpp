@@ -14,7 +14,8 @@ void PE::Renderer::initialize()
 
 	glewExperimental = true;
 	GLenum err = glewInit();
-	if (GLEW_OK != err) {
+	if (GLEW_OK != err)
+	{
 		throw "GLEW failed to initialize";
 	}
 
@@ -35,7 +36,8 @@ void PE::Renderer::render()
 		throw "Attempting to render with no camera";
 
 	//render all renderables
-	for (auto renderable : _renderables) {
+	for (auto renderable : _renderables)
+	{
 		renderable->render(_camera);
 	}
 }
@@ -45,12 +47,12 @@ void PE::Renderer::cleanUp()
 	std::cout << "Closing renderer" << std::endl;
 }
 
-void PE::Renderer::addRenderable(Renderable* renderable) 
+void PE::Renderer::addRenderable(Renderable* renderable)
 {
 	_renderables.push_back(renderable);
 }
 
-void PE::Renderer::setCamera(Camera* camera) 
+void PE::Renderer::setCamera(Camera* camera)
 {
 	_camera = camera;
 }

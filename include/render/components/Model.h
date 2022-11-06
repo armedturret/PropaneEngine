@@ -5,7 +5,7 @@
 #include "core/Component.h"
 
 namespace PE {
-	class Model : public Renderable, public Component{
+	class Model : public Renderable, public Component {
 	public:
 		Model();
 

@@ -2,7 +2,7 @@
 
 #include "Application.h"
 
-void PE::Camera::onStart() 
+void PE::Camera::onStart()
 {
 	_ortho = false;
 	_fov = 45.0f;
@@ -30,10 +30,12 @@ glm::mat4 PE::Camera::getProjectionMatrix()
 	glm::ivec2 dimensions = Application::getInstance().getDimensions();
 	float aspect = (float)dimensions[0] / (float)dimensions[1];
 
-	if (!_ortho) {
+	if (!_ortho)
+	{
 		return glm::perspective(_fov, aspect, _nearPlane, _farPlane);
 	}
-	else {
+	else
+	{
 		return glm::ortho(-_orthoSize * aspect, _orthoSize * aspect, -_orthoSize, _orthoSize);
 	}
 }

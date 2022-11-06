@@ -6,7 +6,7 @@ namespace PE {
 	class Renderable {
 	public:
 		Renderable();
-		
+
 		virtual void render(Camera* camera) = 0;
 
 	private:

@@ -14,7 +14,7 @@
 
 using namespace std;
 
-PE::Model::Model():
+PE::Model::Model() :
 	_drawStatic(false),
 	_shader(),
 	_vao(0),
@@ -53,7 +53,8 @@ void PE::Model::onStart()
 
 	//determine if position data needs to be written
 	int vertPos = _shader.getAttribLocation("vertPos");
-	if (vertPos != -1) {
+	if (vertPos != -1)
+	{
 		//3 values of type float, no normalized with a gap of 3 floats with no offset for first data piece
 		glVertexAttribPointer(vertPos, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(vertPos);
@@ -74,7 +75,8 @@ void PE::Model::render(Camera* camera)
 
 	//find the mvp and calculate the camera
 	int mvpLocation = _shader.getUniformLocation("mvp");
-	if (mvpLocation != -1) {
+	if (mvpLocation != -1)
+	{
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), _transform.getPosition())
 			* glm::toMat4(_transform.getRotation())
 			* glm::scale(glm::mat4(1.0f), _transform.getScale());

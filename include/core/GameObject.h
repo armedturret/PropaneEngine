@@ -13,7 +13,8 @@ namespace PE {
 	public:
 		template <class T>
 		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-		addComponent() {
+			addComponent()
+		{
 			std::shared_ptr<Component> temp(new T);
 			temp.get()->_gameObject = this;
 			temp.get()->_transform = &_transform;
@@ -40,6 +41,6 @@ namespace PE {
 		std::vector<std::shared_ptr<Component>> _components;
 		bool _initialized;
 		Transform _transform;
-		
+
 	};
 }
