@@ -1,14 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace PE {
 	class Shader {
 	public:
-		Shader();
+		static void freeShaders();
 
-		//manually free up shader
-		void free();
+		Shader();
 
 		//returns a non-zero error code if compilation failed for whatever reason
 		int compile(std::string vertFile, std::string fragFile);
@@ -22,9 +22,14 @@ namespace PE {
 		//gets the location of a uniform
 		int getUniformLocation(std::string name);
 	private:
+		//manually free up shader
+		void free();
+
 		//returns a non-zero error code if compilation failed for whatever reason
 		int compileShader(std::string sourceFile, unsigned int* shaderId);
 
 		unsigned int _vertShader, _fragShader, _shaderProgram;
+
+		static std::vector<Shader*> _shaders;
 	};
 }

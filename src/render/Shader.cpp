@@ -8,6 +8,18 @@
 
 using namespace std;
 
+vector<PE::Shader*> PE::Shader::_shaders;
+
+void PE::Shader::freeShaders()
+{
+	for (auto shader : _shaders)
+	{
+		shader->free();
+	}
+
+	_shaders.clear();
+}
+
 PE::Shader::Shader() :
 	_vertShader(0),
 	_fragShader(0),
@@ -53,6 +65,8 @@ int PE::Shader::compile(std::string vertFile, std::string fragFile)
 		cerr << "Failed to link shaders: " << infoLog << endl;
 		return -1;
 	}
+
+	_shaders.push_back(this);
 
 	cout << "Compiled/linked succesfully!" << endl;
 

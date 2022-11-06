@@ -6,6 +6,8 @@
 namespace PE {
 	class Texture {
 	public:
+		Texture(): _texture(0) {}
+
 		static void freeTextures();
 
 		enum class WRAP_MODE { REPEAT, MIRROR_REPEAT, CLAMP_EDGE };

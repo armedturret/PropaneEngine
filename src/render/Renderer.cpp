@@ -2,6 +2,9 @@
 
 #include "core/components/Camera.h"
 
+#include "render/Texture.h"
+#include "render/Shader.h"
+
 #include <glm/glm.hpp>
 #include <gl/glew.h>
 using namespace glm;
@@ -44,7 +47,9 @@ void PE::Renderer::render()
 
 void PE::Renderer::cleanUp()
 {
-	std::cout << "Closing renderer" << std::endl;
+	std::cout << "Closing renderer, freeing textures and shaders" << std::endl;
+	Shader::freeShaders();
+	Texture::freeTextures();
 }
 
 void PE::Renderer::addRenderable(Renderable* renderable)

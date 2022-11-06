@@ -14,19 +14,18 @@
 
 using namespace std;
 
-PE::Model::Model() :
+PE::Model::Model():
 	_drawStatic(false),
-	_shader(),
 	_vao(0),
-	_vbo(0),
-	_transform()
+	_vbo(0)
 {
+
 }
 
-void PE::Model::onStart()
+void PE::Model::loadWithMaterial(std::shared_ptr<Material> material, bool drawStatic)
 {
-	//manually load shader
-	_shader.compile("./shaders/default.vert", "./shaders/default.frag");
+	_material = material;
+	_drawStatic = drawStatic;
 
 	//generate vaos for storing pointer properties once (and only once)
 	glGenVertexArrays(1, &_vao);
@@ -39,25 +38,34 @@ void PE::Model::onStart()
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
 	//create some temporary vertex data for testing reasons
-	float vertices[] = {
-		0.0f, -0.5f, -0.5f,
-		0.0f, -0.5f, 0.5f,
-		0.0f, 0.5f, 0.5f,
-		0.0f, -0.5f, -0.5f,
-		0.0f, 0.5f, -0.5f,
-		0.0f, 0.5f, 0.5f,
+	Vertex vertices[] = {
+		{{0.0f, -0.5f, -0.5f}, {0.0f, 0.0f}},
+		{{0.0f, -0.5f, 0.5f}, {0.0f, 1.0f}},
+		{{0.0f, 0.5f, 0.5f}, {1.0f, 1.0f}},
+		{{0.0f, -0.5f, -0.5f}, {0.0f, 0.0f}},
+		{{0.0f, 0.5f, -0.5f}, {1.0f, 0.0f}},
+		{{0.0f, 0.5f, 0.5f}, {1.0f, 1.0f}}
 	};
 
 	//set the data for the vbo to be the verts
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, _drawStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 
 	//determine if position data needs to be written
-	int vertPos = _shader.getAttribLocation("vertPos");
+	int vertPos = _material.get()->getShader().getAttribLocation("vertPos");
 	if (vertPos != -1)
 	{
-		//3 values of type float, no normalized with a gap of 3 floats with no offset for first data piece
-		glVertexAttribPointer(vertPos, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		//3 values of type float, not normalized with a gap of one Vertex object with an offset of the position location
+		glVertexAttribPointer(vertPos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 		glEnableVertexAttribArray(vertPos);
+	}
+
+	//determine if uv data needs to be wrriten
+	int uvPos = _material.get()->getShader().getAttribLocation("uvPos");
+	if (uvPos != -1)
+	{
+		//2 values of type float, not noramlized with a gap of one Vertex object with an offset of the uv location
+		glVertexAttribPointer(uvPos, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+		glEnableVertexAttribArray(uvPos);
 	}
 
 	//unbind the vbo since the vao now associates with it
@@ -67,19 +75,26 @@ void PE::Model::onStart()
 	glBindVertexArray(0);
 }
 
+void PE::Model::onStart()
+{
+	
+}
+
 void PE::Model::render(Camera* camera)
 {
-	//enable the shader and vao
-	_shader.useShader();
+	//use the material
+	_material.get()->useMaterial();
+
+	//enable the vao
 	glBindVertexArray(_vao);
 
 	//find the mvp and calculate the camera
-	int mvpLocation = _shader.getUniformLocation("mvp");
+	int mvpLocation = _material.get()->getShader().getUniformLocation("mvp");
 	if (mvpLocation != -1)
 	{
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), _transform.getPosition())
-			* glm::toMat4(_transform.getRotation())
-			* glm::scale(glm::mat4(1.0f), _transform.getScale());
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), getTransform()->getPosition())
+			* glm::toMat4(getTransform()->getRotation())
+			* glm::scale(glm::mat4(1.0f), getTransform()->getScale());
 
 		glm::mat4 mvp = camera->getProjectionMatrix() * camera->getLookMatrix() * model;
 
@@ -96,12 +111,11 @@ void PE::Model::render(Camera* camera)
 void PE::Model::update()
 {
 	//rotate around x axis
-	_transform.setRotation(glm::angleAxis(glm::radians(90.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.0f, 0.0f)));
+	getTransform()->setRotation(glm::angleAxis(glm::radians(90.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.0f, 0.0f)));
 }
 
 void PE::Model::onDestroy()
 {
 	glDeleteBuffers(1, &_vbo);
 	glDeleteVertexArrays(1, &_vao);
-	_shader.free();
 }

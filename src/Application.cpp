@@ -12,12 +12,6 @@ _dimensions(640, 480)
 
 int PE::Application::run(int argc, char** argv)
 {
-	//temporarily create a game object with a model and another with a camera
-	createGameObject()->addComponent<Model>();
-	GameObject* cameraObject = createGameObject();
-	cameraObject->addComponent<Camera>();
-	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
-
 	//create the window
 	if (!glfwInit())
 	{
@@ -40,6 +34,23 @@ int PE::Application::run(int argc, char** argv)
 	glfwMakeContextCurrent(_window);
 
 	_renderer.initialize();
+
+	//temporarily create a game object with a model
+	Model* model = createGameObject()->addComponent<Model>();
+	//create a material
+	Texture tex;
+	tex.loadFromFile("./resources/golden_star.png", true,
+		PE::Texture::WRAP_MODE::CLAMP_EDGE,
+		PE::Texture::FILTERING::NEAREST_MIPMAP_NEAREST,
+		PE::Texture::FILTERING::NEAREST);
+	Shader shader;
+	shader.compile("./shaders/default.vert", "./shaders/default.frag");
+	std::shared_ptr<Material> mat(new Material(tex, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
+	model->loadWithMaterial(mat, false);
+	//create another game object for a camera
+	GameObject* cameraObject = createGameObject();
+	cameraObject->addComponent<Camera>();
+	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
 
 	//initialize all game objects
 	for (int i = 0; i < _gameObjects.size(); i++)

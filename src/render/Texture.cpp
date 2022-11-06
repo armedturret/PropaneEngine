@@ -8,6 +8,8 @@
 
 using namespace std;
 
+vector<PE::Texture*> PE::Texture::_textures;
+
 void PE::Texture::freeTextures()
 {
 	for (auto tex : _textures)
@@ -40,7 +42,7 @@ void PE::Texture::loadFromFile(std::string fileName,
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrChannels, 0);
 
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		cerr << "Failled to load texture" << endl;
 		return;
@@ -49,12 +51,11 @@ void PE::Texture::loadFromFile(std::string fileName,
 	//generate the textures
 	glGenTextures(1, &_texture);
 
-
 	//bind the texture to active to modify it
 	glBindTexture(GL_TEXTURE_2D, _texture);
 	
 	//determine the wrap mode
-	int wrapModeValue;
+	int wrapModeValue = 0;
 	switch (wrapMode)
 	{
 	case WRAP_MODE::REPEAT:
@@ -111,14 +112,18 @@ void PE::Texture::loadFromFile(std::string fileName,
 	//bind texture data
 	glTexImage2D(GL_TEXTURE_2D, 0, transparency ? GL_RGBA : GL_RGB, width, height, 0, nrChannels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
 
-	//generate mipmaps if needed
-	if (usingMipmaps)
-		glGenerateMipmap(GL_TEXTURE_2D);
-
 	//remove the data
 	stbi_image_free(data);
 
+	//generate mipmaps if needed
+	if (usingMipmaps)
+	{
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+
 	_textures.push_back(this);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 unsigned int PE::Texture::getTexture() const
