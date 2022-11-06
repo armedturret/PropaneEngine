@@ -10,6 +10,8 @@
     <ClCompile Include="src\core\Transform.cpp" />
     <ClCompile Include="src\render\Renderable.cpp" />
     <ClCompile Include="src\core\components\Camera.cpp" />
+    <ClCompile Include="src\render\Material.cpp" />
+    <ClCompile Include="src\render\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\render\components\Model.h" />
@@ -21,5 +23,8 @@
     <ClInclude Include="include\core\Component.h" />
     <ClInclude Include="include\core\Transform.h" />
     <ClInclude Include="include\core\components\Camera.h" />
+    <ClInclude Include="include\render\stb_image.h" />
+    <ClInclude Include="include\render\Material.h" />
+    <ClInclude Include="include\render\Texture.h" />
   </ItemGroup>
 </Project>

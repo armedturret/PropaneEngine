@@ -15,7 +15,7 @@ namespace PE {
 		//loads a texture, adds it to the texture, do not use mipmaps for max filters
 		void loadFromFile(std::string fileName,
 			bool transparency = false,
-			WRAP_MODE mode = WRAP_MODE::CLAMP_EDGE,
+			WRAP_MODE wrapMode = WRAP_MODE::CLAMP_EDGE,
 			FILTERING min = FILTERING::LINEAR_MIPMAP_LINEAR,
 			FILTERING max = FILTERING::LINEAR);
 
@@ -27,6 +27,6 @@ namespace PE {
 		unsigned int _texture;
 
 		//store list of textures for freeing later
-		static std::vector<Texture&> _textures;
+		static std::vector<Texture*> _textures;
 	};
 }
