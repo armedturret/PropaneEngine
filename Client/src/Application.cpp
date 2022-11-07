@@ -1,5 +1,9 @@
 #include "Application.h"
 
+#include "imgui.h"
+#include "render/imgui/imgui_impl_opengl3.h"
+#include "render/imgui/imgui_impl_glfw.h"
+
 #include "render/components/Model.h"
 #include "core/Input.h"
 #include "core/components/NoclipController.h"
@@ -42,6 +46,15 @@ int PE::Application::run(int argc, char** argv)
 
 	_renderer.initialize();
 
+	//setup IMGUI
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplGlfw_InitForOpenGL(_window, true);
+	ImGui_ImplOpenGL3_Init("#version 460 core");
+	//set style to look cool
+	ImGui::StyleColorsDark();
+
 	//temporarily create a game object with a model
 	Model* model = createGameObject()->addComponent<Model>();
 	//create a material
@@ -78,8 +91,13 @@ int PE::Application::run(int argc, char** argv)
 		//reset delta for mouse input
 		Input::_mouseData.delta = glm::vec2(0.0f);
 
-		//check for input and the like
+		//poll inputs
 		glfwPollEvents();
+
+		//start new imgui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
 		//game object updates
 		for (int i = 0; i < _gameObjects.size(); i++)
@@ -90,6 +108,16 @@ int PE::Application::run(int argc, char** argv)
 
 		//call render pass
 		_renderer.render();
+
+		//call gui pass
+		for (int i = 0; i < _gameObjects.size(); i++)
+		{
+			_gameObjects[i].get()->onGUI();
+		}
+		
+		//render imgui stuff
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		//swap buffers to prevent flickering
 		glfwSwapBuffers(_window);
@@ -132,6 +160,11 @@ PE::Application::~Application()
 	{
 		_gameObjects[i].get()->onDestroy();
 	}
+
+	//cleanup imgui stuff
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	_renderer.cleanUp();
 	glfwTerminate();

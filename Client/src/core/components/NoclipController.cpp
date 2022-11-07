@@ -23,7 +23,7 @@ void PE::NoclipController::onStart()
 void PE::NoclipController::update()
 {
 	//handle looking
-	if (Input::getMouseButton(GLFW_MOUSE_BUTTON_1))
+	if (Input::getMouseButton(GLFW_MOUSE_BUTTON_1) && false)
 	{
 		Input::setCursorMode(Input::CURSOR_MODE::LOCKED);
 		_yaw -= Input::getMouseData().delta.x * _sensitivity.x;

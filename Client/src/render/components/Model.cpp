@@ -10,6 +10,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+
 #include "render/Shader.h"
 
 using namespace std;
@@ -118,4 +120,11 @@ void PE::Model::onDestroy()
 {
 	glDeleteBuffers(1, &_vbo);
 	glDeleteVertexArrays(1, &_vao);
+}
+
+void PE::Model::onGUI()
+{
+	ImGui::Begin("Model Test");
+	ImGui::Text("Hola!");
+	ImGui::End();
 }

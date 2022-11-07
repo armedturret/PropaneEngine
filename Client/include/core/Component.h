@@ -11,6 +11,7 @@ namespace PE {
 		virtual void onStart() {}
 		virtual void update() {}
 		virtual void onDestroy() {}
+		virtual void onGUI() {}
 
 		float getDeltaTime() const { return _deltaTime; }
 		Transform* getTransform() const { return _transform; }

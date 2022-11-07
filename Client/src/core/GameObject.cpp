@@ -29,6 +29,14 @@ void PE::GameObject::onDestroy()
 	}
 }
 
+void PE::GameObject::onGUI()
+{
+	for (int i = 0; i < _components.size(); i++)
+	{
+		_components[i].get()->onGUI();
+	}
+}
+
 PE::GameObject::GameObject() : _initialized(false),
 _transform(),
 _deltaTime(0.0f)

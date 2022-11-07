@@ -17,6 +17,7 @@ namespace PE {
 		void render(Camera* camera) override;
 		void update() override;
 		void onDestroy() override;
+		void onGUI() override;
 	private:
 		struct Position {
 			float x;

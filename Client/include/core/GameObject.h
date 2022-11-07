@@ -35,6 +35,7 @@ namespace PE {
 		void onStart();
 		void update();
 		void onDestroy();
+		void onGUI();
 
 		friend class Application;
 

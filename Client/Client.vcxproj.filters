@@ -14,6 +14,8 @@
     <ClCompile Include="src\render\Texture.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\components\NoclipController.cpp" />
+    <ClCompile Include="src\render\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\render\imgui\imgui_impl_glfw.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\render\components\Model.h" />
@@ -30,5 +32,7 @@
     <ClInclude Include="include\render\Texture.h" />
     <ClInclude Include="include\core\Input.h" />
     <ClInclude Include="include\core\components\NoclipController.h" />
+    <ClInclude Include="include\render\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="include\render\imgui\imgui_impl_glfw.h" />
   </ItemGroup>
 </Project>
