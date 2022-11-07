@@ -1,5 +1,9 @@
 #include "core/components/NoclipController.h"
 
+#include <iostream>
+
+#include <glm/gtx/string_cast.hpp>
+
 #include "Application.h"
 
 #include "core/input.h"
@@ -19,20 +23,21 @@ void PE::NoclipController::onStart()
 void PE::NoclipController::update()
 {
 	//handle looking
-	glm::vec3 rotation = glm::degrees(glm::eulerAngles(getTransform()->getRotation()));
 	if (Input::getMouseButton(GLFW_MOUSE_BUTTON_1))
 	{
 		Input::setCursorMode(Input::CURSOR_MODE::LOCKED);
-		rotation.x = 0.0f;
-		rotation.y -= Input::getMouseData().delta.x * _sensitivity.x;
-		rotation.z -= Input::getMouseData().delta.y * _sensitivity.y;
-		rotation.z = glm::clamp(rotation.z, -89.99f, 89.99f);
+		_yaw -= Input::getMouseData().delta.x * _sensitivity.x;
+		_pitch -= Input::getMouseData().delta.y * _sensitivity.y;
+		_pitch = glm::clamp(_pitch, -89.99f, 89.99f);
+		glm::vec3 rotation(0.0f);
+		rotation.y = _yaw;
+		//rotation.z = _pitch;
+		getTransform()->setRotation(glm::quat(glm::radians(rotation)));
 	}
 	else
 	{
 		Input::setCursorMode(Input::CURSOR_MODE::NORMAL);
 	}
-	getTransform()->setRotation(glm::quat(glm::radians(rotation)));
 
 	//movement controls
 	glm::vec3 currentPos = getTransform()->getPosition();

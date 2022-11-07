@@ -15,6 +15,9 @@ namespace PE {
 		void setSensitivity(glm::vec2 sensitivity);
 
 	private:
+		float _yaw;
+		float _pitch;
+
 		float _speed;
 		glm::vec2 _sensitivity;
 	};

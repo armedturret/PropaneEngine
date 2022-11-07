@@ -59,7 +59,7 @@ int PE::Application::run(int argc, char** argv)
 	cameraObject->addComponent<Camera>();
 	auto nc = cameraObject->addComponent<NoclipController>();
 	nc->setSpeed(4.0f);
-	nc->setSensitivity(glm::vec2(1.0f));
+	nc->setSensitivity(glm::vec2(0.1f));
 	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
 
 	//initialize all game objects

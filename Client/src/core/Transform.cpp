@@ -45,7 +45,7 @@ glm::vec3 PE::Transform::getForward() const
 
 glm::vec3 PE::Transform::getUp() const
 {
-	return glm::normalize(glm::rotate(_rotation, glm::vec3(0.0f, 1.0f, 0.0f)));
+	return glm::normalize(glm::cross(getRight(), getForward()));
 }
 
 glm::vec3 PE::Transform::getRight() const
