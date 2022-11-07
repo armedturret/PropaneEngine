@@ -2,6 +2,8 @@
 
 #include "Application.h"
 
+#include "core/input.h"
+
 void PE::Camera::onStart()
 {
 	_ortho = false;
@@ -17,7 +19,27 @@ void PE::Camera::onStart()
 
 void PE::Camera::update()
 {
-
+	glm::vec3 currentPos = getTransform()->getPosition();
+	glm::vec3 desiredVelocity = glm::vec3(0.0f);
+	if (Input::getKeyValue(GLFW_KEY_W))
+	{
+		desiredVelocity += getTransform()->getForward();
+	}
+	if (Input::getKeyValue(GLFW_KEY_S))
+	{
+		desiredVelocity -= getTransform()->getForward();
+	}
+	if (Input::getKeyValue(GLFW_KEY_A))
+	{
+		desiredVelocity -= getTransform()->getRight();
+	}
+	if (Input::getKeyValue(GLFW_KEY_D))
+	{
+		desiredVelocity += getTransform()->getRight();
+	}
+	if(desiredVelocity != glm::vec3(0.0f))
+		desiredVelocity = glm::normalize(desiredVelocity) * 4.0f;
+	getTransform()->setPosition(currentPos + (float)Application::getInstance().getDeltaTime() * desiredVelocity);
 }
 
 void PE::Camera::onDestroy()
@@ -44,7 +66,7 @@ glm::mat4 PE::Camera::getLookMatrix()
 {
 	//uses camera pos, target pos (forward), and up direction
 	return glm::lookAt(getTransform()->getPosition(),
-		getTransform()->getForward(),
+		getTransform()->getForward() + getTransform()->getPosition(),
 		getTransform()->getUp());
 }
 

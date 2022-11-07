@@ -26,6 +26,8 @@ namespace PE {
 		~Application();
 
 		Renderer& getRenderer();
+
+		double getDeltaTime();
 		
 		//returns width, height vector
 		glm::ivec2 getDimensions() const;
@@ -44,5 +46,8 @@ namespace PE {
 
 		Renderer _renderer;
 		bool _initialized;
+
+		double _deltaTime;
+		double _previousTime;
 	};
 }

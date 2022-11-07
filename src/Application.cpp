@@ -1,11 +1,14 @@
 #include "Application.h"
 
 #include "render/components/Model.h"
+#include "core/Input.h"
 
 PE::Application::Application() : _initialized(false),
 _renderer(),
 _window(),
-_dimensions(640, 480)
+_dimensions(640, 480),
+_deltaTime(0.0),
+_previousTime(0.0)
 {
 
 }
@@ -32,6 +35,9 @@ int PE::Application::run(int argc, char** argv)
 	}
 
 	glfwMakeContextCurrent(_window);
+	glfwSwapInterval(1); //vsync enabled, set to 0 for no vsync
+
+	Input::initializeCallbacks(_window);
 
 	_renderer.initialize();
 
@@ -62,6 +68,9 @@ int PE::Application::run(int argc, char** argv)
 
 	while (!glfwWindowShouldClose(_window))
 	{
+		_deltaTime = glfwGetTime() - _previousTime;
+		_previousTime = glfwGetTime();
+
 		//game object updates
 		for (int i = 0; i < _gameObjects.size(); i++)
 		{
@@ -80,6 +89,11 @@ int PE::Application::run(int argc, char** argv)
 
 	//don't bother with clean up since called out of scope
 	return 0;
+}
+
+double PE::Application::getDeltaTime()
+{
+	return _deltaTime;
 }
 
 glm::ivec2 PE::Application::getDimensions() const

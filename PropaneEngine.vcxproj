@@ -23,6 +23,7 @@
     <ClCompile Include="src\ClientMain.cpp" />
     <ClCompile Include="src\core\components\Camera.cpp" />
     <ClCompile Include="src\core\GameObject.cpp" />
+    <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
     <ClCompile Include="src\render\components\Model.cpp" />
     <ClCompile Include="src\render\Material.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="include\render\Shader.h" />
     <ClInclude Include="include\render\stb_image.h" />
     <ClInclude Include="include\render\Texture.h" />
+    <ClInclude Include="include\core\Input.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
