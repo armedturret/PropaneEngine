@@ -39,6 +39,7 @@ namespace PE {
 		friend class Application;
 
 		std::vector<std::shared_ptr<Component>> _components;
+		float _deltaTime;
 		bool _initialized;
 		Transform _transform;
 

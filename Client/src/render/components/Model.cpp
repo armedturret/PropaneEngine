@@ -111,7 +111,7 @@ void PE::Model::render(Camera* camera)
 void PE::Model::update()
 {
 	//rotate around x axis
-	getTransform()->setRotation(glm::quat(glm::vec3(glm::radians(90.0f * (float)glfwGetTime() * 2.0f), 0.0f, 0.0f)));
+	//getTransform()->setRotation(glm::quat(glm::vec3(glm::radians(90.0f * (float)glfwGetTime() * 2.0f), 0.0f, 0.0f)));
 }
 
 void PE::Model::onDestroy()

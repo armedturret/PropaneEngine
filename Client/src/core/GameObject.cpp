@@ -16,6 +16,7 @@ void PE::GameObject::update()
 {
 	for (int i = 0; i < _components.size(); i++)
 	{
+		_components[i].get()->_deltaTime = _deltaTime;
 		_components[i].get()->update();
 	}
 }
@@ -29,7 +30,8 @@ void PE::GameObject::onDestroy()
 }
 
 PE::GameObject::GameObject() : _initialized(false),
-_transform()
+_transform(),
+_deltaTime(0.0f)
 {
 
 }

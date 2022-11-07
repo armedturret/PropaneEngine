@@ -2,6 +2,7 @@
 
 #include "render/components/Model.h"
 #include "core/Input.h"
+#include "core/components/NoclipController.h"
 
 PE::Application::Application() : _initialized(false),
 _renderer(),
@@ -56,6 +57,9 @@ int PE::Application::run(int argc, char** argv)
 	//create another game object for a camera
 	GameObject* cameraObject = createGameObject();
 	cameraObject->addComponent<Camera>();
+	auto nc = cameraObject->addComponent<NoclipController>();
+	nc->setSpeed(4.0f);
+	nc->setSensitivity(glm::vec2(1.0f));
 	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
 
 	//initialize all game objects
@@ -68,12 +72,19 @@ int PE::Application::run(int argc, char** argv)
 
 	while (!glfwWindowShouldClose(_window))
 	{
-		_deltaTime = glfwGetTime() - _previousTime;
-		_previousTime = glfwGetTime();
+		_deltaTime = (float)glfwGetTime() - _previousTime;
+		_previousTime = (float)glfwGetTime();
+
+		//reset delta for mouse input
+		Input::_mouseData.delta = glm::vec2(0.0f);
+
+		//check for input and the like
+		glfwPollEvents();
 
 		//game object updates
 		for (int i = 0; i < _gameObjects.size(); i++)
 		{
+			_gameObjects[i].get()->_deltaTime = _deltaTime;
 			_gameObjects[i].get()->update();
 		}
 
@@ -82,18 +93,10 @@ int PE::Application::run(int argc, char** argv)
 
 		//swap buffers to prevent flickering
 		glfwSwapBuffers(_window);
-
-		//check for input and the like
-		glfwPollEvents();
 	}
 
 	//don't bother with clean up since called out of scope
 	return 0;
-}
-
-double PE::Application::getDeltaTime()
-{
-	return _deltaTime;
 }
 
 glm::ivec2 PE::Application::getDimensions() const

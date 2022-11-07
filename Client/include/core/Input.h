@@ -31,6 +31,8 @@ namespace PE {
 		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+		friend class Application;
+
 		static GLFWwindow* _window;
 		static Mouse _mouseData;
 		static std::unordered_map<int, bool> _keyValues;

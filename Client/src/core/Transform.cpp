@@ -43,12 +43,27 @@ glm::vec3 PE::Transform::getForward() const
 	return glm::normalize(glm::rotate(_rotation, glm::vec3(1.0f, 0.0f, 0.0f)));
 }
 
+glm::vec3 PE::Transform::getUp() const
+{
+	return glm::normalize(glm::rotate(_rotation, glm::vec3(0.0f, 1.0f, 0.0f)));
+}
+
 glm::vec3 PE::Transform::getRight() const
 {
 	return glm::normalize(glm::rotate(_rotation, glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
-glm::vec3 PE::Transform::getUp() const
+glm::vec3 PE::Transform::getBackward() const
 {
-	return glm::normalize(glm::rotate(_rotation, glm::vec3(0.0f, 1.0f, 0.0f)));
+	return -getForward();
+}
+
+glm::vec3 PE::Transform::getDown() const
+{
+	return -getUp();
+}
+
+glm::vec3 PE::Transform::getLeft() const
+{
+	return -getRight();
 }

@@ -12,11 +12,15 @@ namespace PE {
 		virtual void update() {}
 		virtual void onDestroy() {}
 
+		float getDeltaTime() const { return _deltaTime; }
 		Transform* getTransform() const { return _transform; }
 		GameObject* getGameObject() const { return _gameObject; }
 
 	private:
 		friend class GameObject;
+
+		//updated by the game object when updating this component
+		float _deltaTime;
 
 		//our component does NOT own these, just referencing
 		Transform* _transform;
