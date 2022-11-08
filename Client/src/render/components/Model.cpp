@@ -94,9 +94,7 @@ void PE::Model::render(Camera* camera)
 	int mvpLocation = _material.get()->getShader().getUniformLocation("mvp");
 	if (mvpLocation != -1)
 	{
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), getTransform()->getPosition())
-			* glm::toMat4(getTransform()->getRotation())
-			* glm::scale(glm::mat4(1.0f), getTransform()->getScale());
+		glm::mat4 model = getTransform()->getTransformMatrix();
 
 		glm::mat4 mvp = camera->getProjectionMatrix() * camera->getLookMatrix() * model;
 
@@ -112,19 +110,11 @@ void PE::Model::render(Camera* camera)
 
 void PE::Model::update()
 {
-	//rotate around x axis
-	//getTransform()->setRotation(glm::quat(glm::vec3(glm::radians(90.0f * (float)glfwGetTime() * 2.0f), 0.0f, 0.0f)));
+
 }
 
 void PE::Model::onDestroy()
 {
 	glDeleteBuffers(1, &_vbo);
 	glDeleteVertexArrays(1, &_vao);
-}
-
-void PE::Model::onGUI()
-{
-	ImGui::Begin("Model Test");
-	ImGui::Text("Hola!");
-	ImGui::End();
 }

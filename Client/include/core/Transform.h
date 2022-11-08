@@ -4,7 +4,11 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include <unordered_set>
+
 namespace PE {
+	class GameObject;
+
 	class Transform {
 	public:
 		Transform();
@@ -17,6 +21,15 @@ namespace PE {
 
 		glm::quat getRotation() const;
 		void setRotation(glm::quat rotation);
+
+		glm::vec3 getLocalPosition() const;
+		void setLocalPosition(glm::vec3 newPos);
+
+		glm::vec3 getLocalScale() const;
+		void setLocalScale(glm::vec3 scale);
+
+		glm::quat getLocalRotation() const;
+		void setLocalRotation(glm::quat rotation);
 
 		//gets the normalized forward vector in terms of the world (standard is X+)
 		glm::vec3 getForward() const;
@@ -31,9 +44,26 @@ namespace PE {
 		//gets the normalized left vector in terms of the world (standard is Z-)
 		glm::vec3 getLeft() const;
 		
+		glm::mat4 getTransformMatrix();
+
+		void setParent(Transform* parent);
+
+		GameObject* getGameObject() const;
+
 	private:
+		friend class GameObject;
+
+		GameObject* _gameObject;
+		
+		Transform* _parent;
+		std::unordered_set<Transform*> _children;
+
 		glm::vec3 _position;
 		glm::vec3 _scale;
 		glm::quat _rotation;
+
+		glm::vec3 _localPosition;
+		glm::vec3 _localScale;
+		glm::quat _localRotation;
 	};
 }

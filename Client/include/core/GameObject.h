@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 #include <vector>
+#include <unordered_set>
 #include <type_traits>
 #include <memory>
 
@@ -43,6 +44,5 @@ namespace PE {
 		float _deltaTime;
 		bool _initialized;
 		Transform _transform;
-
 	};
 }

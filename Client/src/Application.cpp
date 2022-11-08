@@ -56,7 +56,9 @@ int PE::Application::run(int argc, char** argv)
 	ImGui::StyleColorsDark();
 
 	//temporarily create a game object with a model
-	Model* model = createGameObject()->addComponent<Model>();
+	GameObject* modelObject = createGameObject();
+	modelObject->getTransform()->setScale(glm::vec3(2.0f));
+	Model * model = modelObject->addComponent<Model>();
 	//create a material
 	Texture tex;
 	tex.loadFromFile("./resources/golden_star.png", true,
@@ -66,7 +68,15 @@ int PE::Application::run(int argc, char** argv)
 	Shader shader;
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
 	std::shared_ptr<Material> mat(new Material(tex, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
-	model->loadWithMaterial(mat, false);
+	model->loadWithMaterial(mat, true);
+
+	//create a child game object for the model
+	model = createGameObject()->addComponent<Model>();
+	model->loadWithMaterial(mat, true);
+	model->getTransform()->setParent(modelObject->getTransform());
+	model->getTransform()->setLocalScale(glm::vec3(0.5f));
+	model->getTransform()->setLocalPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+
 	//create another game object for a camera
 	GameObject* cameraObject = createGameObject();
 	cameraObject->addComponent<Camera>();
@@ -74,6 +84,10 @@ int PE::Application::run(int argc, char** argv)
 	nc->setSpeed(4.0f);
 	nc->setSensitivity(glm::vec2(0.1f));
 	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
+
+	float primaryRoll = 0.0f;
+	float scale = 0.0001f;
+	float secondaryRoll = 0.0f;
 
 	//initialize all game objects
 	for (int i = 0; i < _gameObjects.size(); i++)
@@ -115,6 +129,16 @@ int PE::Application::run(int argc, char** argv)
 			_gameObjects[i].get()->onGUI();
 		}
 		
+		/*TEMPORARY CODE REMOVE LATER*/
+		ImGui::Begin("DEBUG WINDOW");
+		ImGui::SliderAngle("Primary roll", &primaryRoll);
+		ImGui::SliderAngle("Secondary roll", &secondaryRoll);
+		ImGui::SliderFloat("Scale", &scale, 0.0001f, 10.f);
+		ImGui::End();
+		modelObject->getTransform()->setRotation(glm::quat(glm::vec3(primaryRoll, 0.0f, 0.0f)));
+		modelObject->getTransform()->setScale(glm::vec3(scale));
+		model->getTransform()->setRotation(glm::quat(glm::vec3(secondaryRoll, 0.0f, 0.0f)));
+
 		//render imgui stuff
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

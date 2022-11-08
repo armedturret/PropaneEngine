@@ -52,6 +52,8 @@
     <ClInclude Include="include\render\stb_image.h" />
     <ClInclude Include="include\render\Texture.h" />
     <ClInclude Include="include\core\Input.h" />
+    <ClInclude Include="include\uuid_v4\endianness.h" />
+    <ClInclude Include="include\uuid_v4\uuid_v4.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -2,6 +2,14 @@
 
 using namespace PE;
 
+PE::GameObject::GameObject() : _initialized(false),
+_transform(),
+_deltaTime(0.0f)
+{
+	//link transform to this
+	_transform._gameObject = this;
+}
+
 void PE::GameObject::onStart()
 {
 	for (int i = 0; i < _components.size(); i++)
@@ -35,13 +43,6 @@ void PE::GameObject::onGUI()
 	{
 		_components[i].get()->onGUI();
 	}
-}
-
-PE::GameObject::GameObject() : _initialized(false),
-_transform(),
-_deltaTime(0.0f)
-{
-
 }
 
 Transform* PE::GameObject::getTransform()

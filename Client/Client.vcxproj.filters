@@ -34,5 +34,7 @@
     <ClInclude Include="include\core\components\NoclipController.h" />
     <ClInclude Include="include\render\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="include\render\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="include\uuid_v4\uuid_v4.h" />
+    <ClInclude Include="include\uuid_v4\endianness.h" />
   </ItemGroup>
 </Project>
