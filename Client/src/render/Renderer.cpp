@@ -28,6 +28,7 @@ void PE::Renderer::initialize()
 	//various opengl settings
 	glCullFace(GL_BACK); //cull backfaces to reduce render time
 	glEnable(GL_DEPTH_TEST); //allow depth testing for 3D
+	glEnable(GL_MULTISAMPLE); //enable MSAA for antialiasing
 }
 
 void PE::Renderer::render()
