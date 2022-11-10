@@ -26,7 +26,7 @@ PE::Mesh::Mesh():
 
 }
 
-void PE::Mesh::setVertices(std::vector<Vertex> vertices, std::vector<int> indices) 
+void PE::Mesh::setVertices(std::vector<Vertex> vertices, std::vector<unsigned int> indices) 
 {
 	_vertices = vertices;
 	_indices = indices;
@@ -65,8 +65,8 @@ void PE::Mesh::render(Camera* camera)
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 	}
 
-	//draw 3 verts
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	//draw all the bound indices
+	glDrawElements(GL_TRIANGLES, (GLsizei)_indices.size(), GL_UNSIGNED_INT, 0);
 
 	//unbind to prevent accidental modification
 	glBindVertexArray(0);
@@ -90,7 +90,7 @@ void PE::Mesh::onDestroy()
 void PE::Mesh::reloadData()
 {
 	//quit if no vertices or material
-	if (_vertices.size() == 0)
+	if (_vertices.size() == 0  || _indices.size() == 0)
 		return;
 	if (_material == nullptr)
 		return;
@@ -108,11 +108,14 @@ void PE::Mesh::reloadData()
 
 	//bind vao for storage of subsequent data
 	glBindVertexArray(_vao);
-	//bind vbo to the array buffer to modify it directly
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-	//set the data for the vbo to be the verts
+	//bind vbo to the array buffer and then set up its data
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);
+
+	//bind EBO to reduce amount of data needed and set its indices
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
 
 	//determine if position data needs to be written
 	int vertPos = _material->getShader().getAttribLocation("vertPos");
@@ -131,10 +134,7 @@ void PE::Mesh::reloadData()
 		glVertexAttribPointer(uvPos, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 		glEnableVertexAttribArray(uvPos);
 	}
-
-	//unbind the vbo since the vao now associates with it
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	
 	//unuse the vao to prevent accidental modification
 	glBindVertexArray(0);
 }

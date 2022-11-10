@@ -70,22 +70,23 @@ int PE::Application::run(int argc, char** argv)
 	std::shared_ptr<Material> mat(new Material({ tex }, {}, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
 	mesh->useMaterial(mat);
 
-	std::vector<PE::Mesh::Vertex> vertices(
-	{
+	std::vector<PE::Mesh::Vertex> vertices({
 		{{0.0f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
 		{{0.0f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
 		{{0.0f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
-		{{0.0f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0, 0.0f}},
-		{{0.0f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},
-		{{0.0f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}}
+		{{0.0f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}
 	});
 
-	mesh->setVertices(vertices, {});
+	std::vector<unsigned int> indices({
+		{0, 1, 2, 0, 3, 2}
+	});
+
+	mesh->setVertices(vertices, indices);
 
 	//create a child game object for the model
 	mesh = createGameObject()->addComponent<Mesh>();
 	mesh->useMaterial(mat);
-	mesh->setVertices(vertices, {});
+	mesh->setVertices(vertices, indices);
 	mesh->getTransform()->setParent(modelObject->getTransform());
 	mesh->getTransform()->setLocalScale(glm::vec3(0.5f));
 	mesh->getTransform()->setLocalPosition(glm::vec3(0.0f, 0.0f, 2.0f));

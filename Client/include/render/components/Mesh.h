@@ -18,7 +18,7 @@ namespace PE {
 
 		Mesh();
 
-		void setVertices(std::vector<Vertex> vertices, std::vector<int> indices);
+		void setVertices(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 		void useMaterial(std::shared_ptr<Material> material);
 
 		void onStart() override;
@@ -34,6 +34,6 @@ namespace PE {
 
 		std::shared_ptr<Material> _material;
 		std::vector<Vertex> _vertices;
-		std::vector<int> _indices;
+		std::vector<unsigned int> _indices;
 	};
 }
