@@ -1,11 +1,14 @@
 #include "render/Material.h"
 
+#include <iostream>
+
 #include <gl/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
-PE::Material::Material(Texture& diffuse, glm::vec4 color, Shader& shader):
+PE::Material::Material(std::vector<Texture> diffuseTextures, std::vector<Texture> specularTextures, glm::vec4 color, Shader shader):
+	_diffuseTextures(diffuseTextures),
+	_specularTextures(specularTextures),
 	_shader(shader),
-	_diffuse(diffuse),
 	_color(color)
 {
 }
@@ -22,23 +25,51 @@ void PE::Material::useMaterial()
 	}
 
 	//use the textures if they exist
-	if (_shader.getUniformLocation("diffuseTex") != -1)
+	int texIndex = 0;
+	for (int i = 0; i < _diffuseTextures.size(); i++)
 	{
-		//set the diffuse texture to point to texture 0
-		glUniform1i(_shader.getUniformLocation("diffuseTex"), 0);
+		std::string target = "diffuseTex" + std::to_string(i);
+		if (_shader.getUniformLocation(target) != -1)
+		{
+			//set the diffuse texture to point to texture 0
+			glUniform1i(_shader.getUniformLocation(target), 0);
 
-		//bind the first texture to be the diffuse
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _diffuse.getTexture());
+			//bind the current texture to a diffuse texture
+			glActiveTexture(GL_TEXTURE0 + texIndex);
+			glBindTexture(GL_TEXTURE_2D, _diffuseTextures[i].getTexture());
+			texIndex++;
+		}
 	}
+
+	for (int i = 0; i < _specularTextures.size(); i++)
+	{
+		std::string target = "target" + std::to_string(i);
+		if (_shader.getUniformLocation(target) != -1)
+		{
+			//set the diffuse texture to point to texture 0
+			glUniform1i(_shader.getUniformLocation(target), 0);
+
+			//bind the current texture to a specular texture
+			glActiveTexture(GL_TEXTURE0 + texIndex);
+			glBindTexture(GL_TEXTURE_2D, _specularTextures[i].getTexture());
+			texIndex++;
+		}
+	}
+
+	glActiveTexture(GL_TEXTURE0);
 }
 
-PE::Shader& PE::Material::getShader() const
+PE::Shader PE::Material::getShader() const
 {
 	return _shader;
 }
 
-PE::Texture& PE::Material::getDiffuseTexture() const
+std::vector<PE::Texture> PE::Material::getDiffuseTextures() const
 {
-	return _diffuse;
+	return _diffuseTextures;
+}
+
+std::vector<PE::Texture> PE::Material::getSpecularTextures() const
+{
+	return _specularTextures;
 }

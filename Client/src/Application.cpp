@@ -67,7 +67,7 @@ int PE::Application::run(int argc, char** argv)
 		PE::Texture::FILTERING::NEAREST);
 	Shader shader;
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
-	std::shared_ptr<Material> mat(new Material(tex, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
+	std::shared_ptr<Material> mat(new Material({ tex }, {}, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
 	model->loadWithMaterial(mat, true);
 
 	//create a child game object for the model

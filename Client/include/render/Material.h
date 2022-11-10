@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "Texture.h"
 #include "Shader.h"
@@ -10,21 +11,17 @@
 namespace PE {
 	class Material {
 	public:
-		Material(Texture& diffuse, glm::vec4 color, Shader& shader);
+		Material(std::vector<Texture> diffuseTextures, std::vector<Texture> specularTextures, glm::vec4 color, Shader shader);
 
 		void useMaterial();
 
-		Shader& getShader() const;
-		Texture& getDiffuseTexture() const;
-
-		//define the move operator because compiler is whining
-		Material& operator=(const Material& other)
-		{
-			return *this;
-		}
+		Shader getShader() const;
+		std::vector<Texture> getDiffuseTextures() const;
+		std::vector<Texture> getSpecularTextures() const;
 	private:
 		glm::vec4 _color;
-		Shader& _shader;
-		Texture& _diffuse;
+		Shader _shader;
+		std::vector<Texture> _diffuseTextures;
+		std::vector<Texture> _specularTextures;
 	};
 }
