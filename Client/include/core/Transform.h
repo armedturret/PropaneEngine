@@ -50,13 +50,17 @@ namespace PE {
 
 		GameObject* getGameObject() const;
 
+		Transform* getParent();
+		std::vector<Transform*> getChildren();
+
 	private:
+		int indexOfChild(Transform* child);
 		friend class GameObject;
 
 		GameObject* _gameObject;
 		
 		Transform* _parent;
-		std::unordered_set<Transform*> _children;
+		std::vector<Transform*> _children;
 
 		glm::vec3 _position;
 		glm::vec3 _scale;

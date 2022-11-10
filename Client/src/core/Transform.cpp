@@ -4,12 +4,12 @@
 
 PE::Transform::Transform() :
 	_position(0.0f),
-	_rotation(),
+	_rotation(glm::vec3(0.0f)),
 	_scale(1.0f),
 	_parent(nullptr),
 	_gameObject(nullptr),
 	_localPosition(0.0f),
-	_localRotation(),
+	_localRotation(glm::vec3(0.0f)),
 	_localScale(1.0f)
 {
 
@@ -151,8 +151,8 @@ void PE::Transform::setParent(Transform* parent)
 	if (parent == this)
 		throw "Attempted to assign self as parent";
 	//remove self from parent
-	if (_parent != nullptr)
-		_parent->_children.erase(this);
+	if (_parent != nullptr && _parent->indexOfChild(this) != -1)
+		_parent->_children.erase(_parent->_children.begin() + _parent->indexOfChild(this));
 
 	//set the other to be this parent
 	_parent = parent;
@@ -164,10 +164,31 @@ void PE::Transform::setParent(Transform* parent)
 
 	//add self to parent
 	if (_parent != nullptr)
-		_parent->_children.insert(this);
+		_parent->_children.push_back(this);
 }
 
 PE::GameObject* PE::Transform::getGameObject() const
 {
 	return _gameObject;
+}
+
+PE::Transform* PE::Transform::getParent()
+{
+	return _parent;
+}
+
+std::vector<PE::Transform*> PE::Transform::getChildren()
+{
+	return _children;
+}
+
+int PE::Transform::indexOfChild(Transform* child)
+{
+	for (int i = 0; i < _children.size(); i++)
+	{
+		if (_children[i] == child)
+			return i;
+	}
+
+	return -1;
 }

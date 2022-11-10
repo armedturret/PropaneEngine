@@ -127,7 +127,7 @@ int PE::Application::run(int argc, char** argv)
 		ImGui::Begin("DEBUG WINDOW");
 		ImGui::SliderAngle("Yaw", &yaw);
 		ImGui::End();
-		fridgeObject->getTransform()->getCj->setRotation(glm::quat(glm::vec3(0.0f, yaw, 0.0f)));
+		fridgeObject->getTransform()->setRotation(glm::quat(glm::vec3(0.0f, yaw, 0.0f)));
 
 		//render imgui stuff
 		ImGui::Render();
