@@ -4,7 +4,7 @@
 #include "render/imgui/imgui_impl_opengl3.h"
 #include "render/imgui/imgui_impl_glfw.h"
 
-#include "render/components/Model.h"
+#include "render/components/Mesh.h"
 #include "core/Input.h"
 #include "core/components/NoclipController.h"
 
@@ -58,7 +58,7 @@ int PE::Application::run(int argc, char** argv)
 	//temporarily create a game object with a model
 	GameObject* modelObject = createGameObject();
 	modelObject->getTransform()->setScale(glm::vec3(2.0f));
-	Model * model = modelObject->addComponent<Model>();
+	Mesh* mesh = modelObject->addComponent<Mesh>();
 	//create a material
 	Texture tex;
 	tex.loadFromFile("./resources/golden_star.png", true,
@@ -68,14 +68,27 @@ int PE::Application::run(int argc, char** argv)
 	Shader shader;
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
 	std::shared_ptr<Material> mat(new Material({ tex }, {}, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
-	model->loadWithMaterial(mat, true);
+	mesh->useMaterial(mat);
+
+	std::vector<PE::Mesh::Vertex> vertices(
+	{
+		{{0.0f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+		{{0.0f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+		{{0.0f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
+		{{0.0f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0, 0.0f}},
+		{{0.0f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},
+		{{0.0f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}}
+	});
+
+	mesh->setVertices(vertices, {});
 
 	//create a child game object for the model
-	model = createGameObject()->addComponent<Model>();
-	model->loadWithMaterial(mat, true);
-	model->getTransform()->setParent(modelObject->getTransform());
-	model->getTransform()->setLocalScale(glm::vec3(0.5f));
-	model->getTransform()->setLocalPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+	mesh = createGameObject()->addComponent<Mesh>();
+	mesh->useMaterial(mat);
+	mesh->setVertices(vertices, {});
+	mesh->getTransform()->setParent(modelObject->getTransform());
+	mesh->getTransform()->setLocalScale(glm::vec3(0.5f));
+	mesh->getTransform()->setLocalPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 
 	//create another game object for a camera
 	GameObject* cameraObject = createGameObject();
@@ -137,7 +150,7 @@ int PE::Application::run(int argc, char** argv)
 		ImGui::End();
 		modelObject->getTransform()->setRotation(glm::quat(glm::vec3(primaryRoll, 0.0f, 0.0f)));
 		modelObject->getTransform()->setScale(glm::vec3(scale));
-		model->getTransform()->setRotation(glm::quat(glm::vec3(secondaryRoll, 0.0f, 0.0f)));
+		mesh->getTransform()->setRotation(glm::quat(glm::vec3(secondaryRoll, 0.0f, 0.0f)));
 
 		//render imgui stuff
 		ImGui::Render();
