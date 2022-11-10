@@ -1,4 +1,4 @@
-#include "render/components/Mesh.h"
+#include "render/components/MeshRenderer.h"
 
 #include <iostream>
 
@@ -16,7 +16,7 @@
 
 using namespace std;
 
-PE::Mesh::Mesh():
+PE::MeshRenderer::MeshRenderer():
 	_vao(0),
 	_vbo(0),
 	_ebo(0),
@@ -26,28 +26,30 @@ PE::Mesh::Mesh():
 
 }
 
-void PE::Mesh::setVertices(std::vector<Vertex> vertices, std::vector<unsigned int> indices) 
+void PE::MeshRenderer::setMesh(Mesh mesh)
 {
-	_vertices = vertices;
-	_indices = indices;
+	_mesh = mesh;
 
 	reloadData();
 }
 
-void PE::Mesh::useMaterial(std::shared_ptr<Material> material)
+void PE::MeshRenderer::setMaterial(std::shared_ptr<Material> material)
 {
 	_material = material;
 
 	reloadData();
 }
 
-void PE::Mesh::onStart()
+void PE::MeshRenderer::onStart()
 {
 	
 }
 
-void PE::Mesh::render(Camera* camera)
+void PE::MeshRenderer::render(Camera* camera)
 {
+	if (!_buffersCreated)
+		return;
+
 	//use the material
 	_material->useMaterial();
 
@@ -66,18 +68,18 @@ void PE::Mesh::render(Camera* camera)
 	}
 
 	//draw all the bound indices
-	glDrawElements(GL_TRIANGLES, (GLsizei)_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)_mesh.indices.size(), GL_UNSIGNED_INT, 0);
 
 	//unbind to prevent accidental modification
 	glBindVertexArray(0);
 }
 
-void PE::Mesh::update()
+void PE::MeshRenderer::update()
 {
 
 }
 
-void PE::Mesh::onDestroy()
+void PE::MeshRenderer::onDestroy()
 {
 	if (!_buffersCreated)
 		return;
@@ -87,10 +89,10 @@ void PE::Mesh::onDestroy()
 	glDeleteVertexArrays(1, &_vao);
 }
 
-void PE::Mesh::reloadData()
+void PE::MeshRenderer::reloadData()
 {
 	//quit if no vertices or material
-	if (_vertices.size() == 0  || _indices.size() == 0)
+	if (_mesh.vertices.size() == 0  || _mesh.indices.size() == 0)
 		return;
 	if (_material == nullptr)
 		return;
@@ -111,11 +113,11 @@ void PE::Mesh::reloadData()
 
 	//bind vbo to the array buffer and then set up its data
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _mesh.vertices.size() * sizeof(Vertex), &_mesh.vertices[0], GL_STATIC_DRAW);
 
 	//bind EBO to reduce amount of data needed and set its indices
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _mesh.indices.size() * sizeof(unsigned int), &_mesh.indices[0], GL_STATIC_DRAW);
 
 	//determine if position data needs to be written
 	int vertPos = _material->getShader().getAttribLocation("vertPos");

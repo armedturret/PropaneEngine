@@ -4,7 +4,8 @@
 #include "render/imgui/imgui_impl_opengl3.h"
 #include "render/imgui/imgui_impl_glfw.h"
 
-#include "render/components/Mesh.h"
+#include "render/components/MeshRenderer.h"
+#include "render/Model.h"
 #include "core/Input.h"
 #include "core/components/NoclipController.h"
 
@@ -55,41 +56,22 @@ int PE::Application::run(int argc, char** argv)
 	//set style to look cool
 	ImGui::StyleColorsDark();
 
-	//temporarily create a game object with a model
-	GameObject* modelObject = createGameObject();
-	modelObject->getTransform()->setScale(glm::vec3(2.0f));
-	Mesh* mesh = modelObject->addComponent<Mesh>();
 	//create a material
 	Texture tex;
-	tex.loadFromFile("./resources/golden_star.png", true,
+	tex.loadFromFile("./resources/fridge.png", true,
 		PE::Texture::WRAP_MODE::CLAMP_EDGE,
 		PE::Texture::FILTERING::NEAREST_MIPMAP_NEAREST,
 		PE::Texture::FILTERING::NEAREST);
 	Shader shader;
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
 	std::shared_ptr<Material> mat(new Material({ tex }, {}, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
-	mesh->useMaterial(mat);
 
-	std::vector<PE::Mesh::Vertex> vertices({
-		{{0.0f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.0f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.0f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
-		{{0.0f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}
-	});
-
-	std::vector<unsigned int> indices({
-		{0, 1, 2, 0, 3, 2}
-	});
-
-	mesh->setVertices(vertices, indices);
-
-	//create a child game object for the model
-	mesh = createGameObject()->addComponent<Mesh>();
-	mesh->useMaterial(mat);
-	mesh->setVertices(vertices, indices);
-	mesh->getTransform()->setParent(modelObject->getTransform());
-	mesh->getTransform()->setLocalScale(glm::vec3(0.5f));
-	mesh->getTransform()->setLocalPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+	//create a model object
+	Model model;
+	model.loadFromFile("./resources/fridge.fbx");
+	model.setMaterials({ mat });
+	GameObject* fridgeObject = model.createInstance();
+	fridgeObject->getTransform()->setScale(glm::vec3(0.01f));
 
 	//create another game object for a camera
 	GameObject* cameraObject = createGameObject();
@@ -99,9 +81,7 @@ int PE::Application::run(int argc, char** argv)
 	nc->setSensitivity(glm::vec2(0.1f));
 	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
 
-	float primaryRoll = 0.0f;
-	float scale = 0.0001f;
-	float secondaryRoll = 0.0f;
+	float yaw = 0.0f;
 
 	//initialize all game objects
 	for (int i = 0; i < _gameObjects.size(); i++)
@@ -145,13 +125,9 @@ int PE::Application::run(int argc, char** argv)
 		
 		/*TEMPORARY CODE REMOVE LATER*/
 		ImGui::Begin("DEBUG WINDOW");
-		ImGui::SliderAngle("Primary roll", &primaryRoll);
-		ImGui::SliderAngle("Secondary roll", &secondaryRoll);
-		ImGui::SliderFloat("Scale", &scale, 0.0001f, 10.f);
+		ImGui::SliderAngle("Yaw", &yaw);
 		ImGui::End();
-		modelObject->getTransform()->setRotation(glm::quat(glm::vec3(primaryRoll, 0.0f, 0.0f)));
-		modelObject->getTransform()->setScale(glm::vec3(scale));
-		mesh->getTransform()->setRotation(glm::quat(glm::vec3(secondaryRoll, 0.0f, 0.0f)));
+		fridgeObject->getTransform()->getCj->setRotation(glm::quat(glm::vec3(0.0f, yaw, 0.0f)));
 
 		//render imgui stuff
 		ImGui::Render();

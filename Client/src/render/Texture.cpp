@@ -8,13 +8,13 @@
 
 using namespace std;
 
-vector<PE::Texture*> PE::Texture::_textures;
+unordered_map<string, PE::Texture*> PE::Texture::_textures;
 
 void PE::Texture::freeTextures()
 {
 	for (auto tex : _textures)
 	{
-		tex->free();
+		tex.second->free();
 	}
 	_textures.clear();
 }
@@ -30,6 +30,14 @@ void PE::Texture::loadFromFile(std::string fileName,
 	if (max != FILTERING::NEAREST && max != FILTERING::LINEAR)
 	{
 		throw "Cannot use mipmaps for upper level generation";
+	}
+	
+	//generate a storage string to check if this texture already exists
+	string representation = "{" + to_string(wrapMode) + "," + to_string(min) + "," + to_string(max) + "," + to_string(transparency) + "," + fileName + "}";
+	if (_textures.contains(representation))
+	{
+		_texture = _textures[representation]->getTexture();
+		return;
 	}
 
 	//determine if mip maps need to be generated
@@ -121,7 +129,7 @@ void PE::Texture::loadFromFile(std::string fileName,
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
-	_textures.push_back(this);
+	_textures[representation] = this;
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

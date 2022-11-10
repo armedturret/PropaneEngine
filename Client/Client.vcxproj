@@ -26,10 +26,11 @@
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
-    <ClCompile Include="src\render\components\Mesh.cpp" />
+    <ClCompile Include="src\render\components\MeshRenderer.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\render\Material.cpp" />
+    <ClCompile Include="src\render\Model.cpp" />
     <ClCompile Include="src\render\Renderable.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
@@ -44,8 +45,10 @@
     <ClInclude Include="include\render\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="include\render\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="include\core\Transform.h" />
-    <ClInclude Include="include\render\components\Mesh.h" />
+    <ClInclude Include="include\render\components\MeshRenderer.h" />
     <ClInclude Include="include\render\Material.h" />
+    <ClInclude Include="include\render\Mesh.h" />
+    <ClInclude Include="include\render\Model.h" />
     <ClInclude Include="include\render\Renderable.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\render\Shader.h" />

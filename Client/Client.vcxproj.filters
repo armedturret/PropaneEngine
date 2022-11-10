@@ -4,7 +4,7 @@
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\ClientMain.cpp" />
-    <ClCompile Include="src\render\components\Mesh.cpp" />
+    <ClCompile Include="src\render\components\MeshRenderer.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
@@ -16,9 +16,10 @@
     <ClCompile Include="src\core\components\NoclipController.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\render\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\render\components\Mesh.h" />
+    <ClInclude Include="include\render\components\MeshRenderer.h" />
     <ClInclude Include="include\render\Renderable.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\Application.h" />
@@ -36,5 +37,7 @@
     <ClInclude Include="include\render\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="include\uuid_v4\uuid_v4.h" />
     <ClInclude Include="include\uuid_v4\endianness.h" />
+    <ClInclude Include="include\render\Model.h" />
+    <ClInclude Include="include\render\Mesh.h" />
   </ItemGroup>
 </Project>

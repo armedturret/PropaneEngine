@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <unordered_map>
 #include <string>
 
 namespace PE {
@@ -10,9 +10,9 @@ namespace PE {
 
 		static void freeTextures();
 
-		enum class WRAP_MODE { REPEAT, MIRROR_REPEAT, CLAMP_EDGE };
+		enum WRAP_MODE { REPEAT, MIRROR_REPEAT, CLAMP_EDGE };
 
-		enum class FILTERING { NEAREST, LINEAR, LINEAR_MIPMAP_LINEAR, LINEAR_MIPMAP_NEAREST, NEAREST_MIPMAP_LINEAR, NEAREST_MIPMAP_NEAREST };
+		enum FILTERING { NEAREST, LINEAR, LINEAR_MIPMAP_LINEAR, LINEAR_MIPMAP_NEAREST, NEAREST_MIPMAP_LINEAR, NEAREST_MIPMAP_NEAREST };
 
 		//loads a texture, adds it to the texture, do not use mipmaps for max filters
 		void loadFromFile(std::string fileName,
@@ -29,6 +29,6 @@ namespace PE {
 		unsigned int _texture;
 
 		//store list of textures for freeing later
-		static std::vector<Texture*> _textures;
+		static std::unordered_map<std::string, Texture*> _textures;
 	};
 }
