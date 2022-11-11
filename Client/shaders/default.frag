@@ -25,8 +25,8 @@ vec3 calcPointLight(PointLight light, vec3 norm)
 	float diff = max(dot(norm, lightDir), 0.0);
 
 	vec3 viewDir = normalize(viewPos - fragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
+	float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 256);
 
 	vec3 result = diff * light.color;
 	result += spec * light.color;
