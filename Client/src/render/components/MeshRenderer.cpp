@@ -61,40 +61,29 @@ void PE::MeshRenderer::render(RenderContext* context)
 
 	//find the mvp and calculate the camera
 	int modelLocation = shader.getUniformLocation("model");
-	if (modelLocation != -1)
-	{
-		glm::mat4 model = getTransform()->getTransformMatrix();
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-	}
+	glm::mat4 model = getTransform()->getTransformMatrix();
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
 	int viewLocation = shader.getUniformLocation("view");
-	if (viewLocation != -1)
-	{
-		glm::mat4 view = context->camera->getLookMatrix();
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-	}
+	glm::mat4 view = context->camera->getLookMatrix();
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 	int projLocation = shader.getUniformLocation("projection");
-	if (projLocation != -1)
-	{
-		glm::mat4 proj = context->camera->getProjectionMatrix();
-		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(proj));
-	}
+	glm::mat4 proj = context->camera->getProjectionMatrix();
+	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(proj));
 
 	//set ambient light
 	int ambientLocation = shader.getUniformLocation("ambient");
-	if (ambientLocation != -1)
-	{
-		glUniform3fv(ambientLocation, 1, glm::value_ptr(context->lightingData->ambient.normalized()));
-	}
+	glUniform3fv(ambientLocation, 1, glm::value_ptr(context->lightingData->ambient.normalized()));
+
+	//set camera position
+	int viewPos = shader.getUniformLocation("viewPos");
+	glUniform3fv(viewPos, 1, glm::value_ptr(context->camera->getTransform()->getPosition()));
 
 	//add lights
 	int lightsToRender = (int)std::min(context->lightingData->lights.size(), LightingData::MAX_LIGHTS);
 	int lightNumLocation = shader.getUniformLocation("numLights");
-	if (lightNumLocation != -1)
-	{
-		glUniform1iv(lightNumLocation, 1, &lightsToRender);
-	}
+	glUniform1iv(lightNumLocation, 1, &lightsToRender);
 	
 	//attempt to set the number of lights
 	for (size_t i = 0; i < lightsToRender; i++)

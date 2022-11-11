@@ -5,6 +5,7 @@ in vec3 fragPos;
 
 out vec4 FragColor;
 
+uniform vec3 viewPos;
 uniform vec3 ambient;
 uniform vec4 color;
 uniform sampler2D diffuseTex0;
@@ -22,8 +23,14 @@ vec3 calcPointLight(PointLight light, vec3 norm)
 {
 	vec3 lightDir = normalize(light.pos - fragPos);  
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * light.color;
-	return diffuse;
+
+	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 reflectDir = reflect(-lightDir, norm);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+
+	vec3 result = diff * light.color;
+	result += spec * light.color;
+	return result;
 }
 
 void main()
