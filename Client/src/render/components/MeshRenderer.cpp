@@ -89,11 +89,11 @@ void PE::MeshRenderer::render(RenderContext* context)
 	}
 
 	//add lights
-	unsigned int lightsToRender = (unsigned int)std::min(context->lightingData->lights.size(), LightingData::MAX_LIGHTS);
+	int lightsToRender = (int)std::min(context->lightingData->lights.size(), LightingData::MAX_LIGHTS);
 	int lightNumLocation = shader.getUniformLocation("numLights");
 	if (lightNumLocation != -1)
 	{
-		glUniform1uiv(lightNumLocation, 1, &lightsToRender);
+		glUniform1iv(lightNumLocation, 1, &lightsToRender);
 	}
 	
 	//attempt to set the number of lights

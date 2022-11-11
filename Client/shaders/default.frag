@@ -16,7 +16,7 @@ struct PointLight{
 
 uniform int numLights;
 
-uniform PointLight[32] pointLights;
+uniform PointLight pointLights[32];
 
 vec3 calcPointLight(PointLight light, vec3 norm)
 {
@@ -32,7 +32,7 @@ void main()
 
 	vec4 result = texture(diffuseTex0, uvCoord) * vec4(ambient, 1.0);
 	for(int i = 0; i < numLights; i++){
-		result += calcPointLight(pointLights[i], norm);
+		result += vec4(calcPointLight(pointLights[i], norm), 0.0);
 	}
 	result *= color;
 	FragColor = result;

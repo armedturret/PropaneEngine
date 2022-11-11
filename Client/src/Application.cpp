@@ -60,7 +60,7 @@ int PE::Application::run(int argc, char** argv)
 	//create the root object
 	_root = std::make_shared<GameObject>();
 	/*TEMP CODE START*/
-	_renderer.getLightingData()->ambient = WHITE;
+	_renderer.getLightingData()->ambient = Color(100, 100, 100);
 
 	//create a material
 	Texture tex;
@@ -74,7 +74,7 @@ int PE::Application::run(int argc, char** argv)
 
 	//create a light
 	GameObject* lightObject = createGameObject();
-	lightObject->getTransform()->setPosition(glm::vec3(1.0f, 1.0f, -1.0f));
+	lightObject->getTransform()->setPosition(glm::vec3(0.0f, 1.0f, -1.0f));
 	lightObject->addComponent<Light>()->setLight(Light::TYPE::POINT, BLUE);
 
 	//create a model object
