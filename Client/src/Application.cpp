@@ -72,6 +72,11 @@ int PE::Application::run(int argc, char** argv)
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
 	std::shared_ptr<Material> mat(new Material({ tex }, {}, WHITE, shader));
 
+	//create a light
+	GameObject* lightObject = createGameObject();
+	lightObject->getTransform()->setPosition(glm::vec3(1.0f, 1.0f, -1.0f));
+	lightObject->addComponent<Light>()->setLight(Light::TYPE::POINT, BLUE);
+
 	//create a model object
 	Model model;
 	model.loadFromFile("./resources/fridge.fbx");

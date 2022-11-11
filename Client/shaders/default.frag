@@ -1,5 +1,7 @@
 #version 460 core
 in vec2 uvCoord;
+in vec3 normal;
+in vec3 fragPos;
 
 out vec4 FragColor;
 
@@ -7,7 +9,31 @@ uniform vec3 ambient;
 uniform vec4 color;
 uniform sampler2D diffuseTex0;
 
+struct PointLight{
+	vec3 color;
+	vec3 pos;
+};
+
+uniform int numLights;
+
+uniform PointLight[32] pointLights;
+
+vec3 calcPointLight(PointLight light, vec3 norm)
+{
+	vec3 lightDir = normalize(light.pos - fragPos);  
+	float diff = max(dot(norm, lightDir), 0.0);
+	vec3 diffuse = diff * light.color;
+	return diffuse;
+}
+
 void main()
 {
-	FragColor = texture(diffuseTex0, uvCoord) * color * vec4(ambient, 1.0);
+	vec3 norm = normalize(normal);
+
+	vec4 result = texture(diffuseTex0, uvCoord) * vec4(ambient, 1.0);
+	for(int i = 0; i < numLights; i++){
+		result += calcPointLight(pointLights[i], norm);
+	}
+	result *= color;
+	FragColor = result;
 }

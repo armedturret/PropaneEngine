@@ -60,14 +60,25 @@ void PE::MeshRenderer::render(RenderContext* context)
 	Shader shader = _material->getShader();
 
 	//find the mvp and calculate the camera
-	int mvpLocation = shader.getUniformLocation("mvp");
-	if (mvpLocation != -1)
+	int modelLocation = shader.getUniformLocation("model");
+	if (modelLocation != -1)
 	{
 		glm::mat4 model = getTransform()->getTransformMatrix();
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+	}
 
-		glm::mat4 mvp = context->camera->getProjectionMatrix() * context->camera->getLookMatrix() * model;
+	int viewLocation = shader.getUniformLocation("view");
+	if (viewLocation != -1)
+	{
+		glm::mat4 view = context->camera->getLookMatrix();
+		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+	}
 
-		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+	int projLocation = shader.getUniformLocation("projection");
+	if (projLocation != -1)
+	{
+		glm::mat4 proj = context->camera->getProjectionMatrix();
+		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(proj));
 	}
 
 	//set ambient light
@@ -88,7 +99,11 @@ void PE::MeshRenderer::render(RenderContext* context)
 	//attempt to set the number of lights
 	for (size_t i = 0; i < lightsToRender; i++)
 	{
-		
+		Light* light = context->lightingData->lights[i];
+		int posLoc = shader.getUniformLocation("pointLights[" + to_string(i) + "].pos");
+		int colorLoc = shader.getUniformLocation("pointLights[" + to_string(i) + "].color");
+		glUniform3fv(posLoc, 1, glm::value_ptr(light->getTransform()->getPosition()));
+		glUniform3fv(colorLoc, 1, glm::value_ptr(light->getColor().normalized()));
 	}
 
 	//draw all the bound indices
@@ -150,6 +165,15 @@ void PE::MeshRenderer::reloadData()
 		//3 values of type float, not normalized with a gap of one Vertex object with an offset of the position location
 		glVertexAttribPointer(vertPos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 		glEnableVertexAttribArray(vertPos);
+	}
+
+	//determine if normal data needs to be written
+	int normPos = _material->getShader().getAttribLocation("norm");
+	if (normPos != -1)
+	{
+		//3 values of type float, not normalized with a gap of one Vertex object with an offset of the position location
+		glVertexAttribPointer(normPos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+		glEnableVertexAttribArray(normPos);
 	}
 
 	//determine if uv data needs to be writen

@@ -14,3 +14,8 @@ void PE::Light::setLight(TYPE type, Color color)
 	_type = type;
 	_color = color;
 }
+
+PE::Color PE::Light::getColor()
+{
+	return _color;
+}

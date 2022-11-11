@@ -13,6 +13,8 @@ namespace PE {
 		enum TYPE {POINT};
 
 		void setLight(TYPE type, Color color);
+
+		Color getColor();
 	private:
 		TYPE _type;
 		Color _color;

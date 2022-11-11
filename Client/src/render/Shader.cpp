@@ -54,7 +54,7 @@ int PE::Shader::compile(std::string vertFile, std::string fragFile)
 	glAttachShader(_shaderProgram, _vertShader);
 	glAttachShader(_shaderProgram, _fragShader);
 	glLinkProgram(_shaderProgram);
-
+	
 	//get shader link problems
 	int success; // GL_TRUE if success
 	char infoLog[512];
