@@ -59,6 +59,8 @@ int PE::Application::run(int argc, char** argv)
 
 	//create the root object
 	_root = std::make_shared<GameObject>();
+	/*TEMP CODE START*/
+	_renderer.getLightingData()->ambient = WHITE;
 
 	//create a material
 	Texture tex;
@@ -68,7 +70,7 @@ int PE::Application::run(int argc, char** argv)
 		PE::Texture::FILTERING::NEAREST);
 	Shader shader;
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
-	std::shared_ptr<Material> mat(new Material({ tex }, {}, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), shader));
+	std::shared_ptr<Material> mat(new Material({ tex }, {}, WHITE, shader));
 
 	//create a model object
 	Model model;
@@ -86,6 +88,7 @@ int PE::Application::run(int argc, char** argv)
 	cameraObject->getTransform()->setPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
 
 	float yaw = 0.0f;
+	/*TEMP CODE END*/
 
 	//initialize all game objects
 	_root->onStart();

@@ -5,7 +5,7 @@
 #include <gl/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
-PE::Material::Material(std::vector<Texture> diffuseTextures, std::vector<Texture> specularTextures, glm::vec4 color, Shader shader):
+PE::Material::Material(std::vector<Texture> diffuseTextures, std::vector<Texture> specularTextures, Color color, Shader shader):
 	_diffuseTextures(diffuseTextures),
 	_specularTextures(specularTextures),
 	_shader(shader),
@@ -21,7 +21,7 @@ void PE::Material::useMaterial()
 	//set the color property if it exists
 	if (_shader.getUniformLocation("color") != -1)
 	{
-		glUniform4fv(_shader.getUniformLocation("color"), 1, glm::value_ptr(_color));
+		glUniform4fv(_shader.getUniformLocation("color"), 1, glm::value_ptr(_color.normalized()));
 	}
 
 	//use the textures if they exist

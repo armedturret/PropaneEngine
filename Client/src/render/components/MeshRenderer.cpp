@@ -13,6 +13,7 @@
 #include <imgui.h>
 
 #include "render/Shader.h"
+#include "render/LightingData.h"
 
 using namespace std;
 
@@ -56,8 +57,10 @@ void PE::MeshRenderer::render(RenderContext* context)
 	//enable the vao
 	glBindVertexArray(_vao);
 
+	Shader shader = _material->getShader();
+
 	//find the mvp and calculate the camera
-	int mvpLocation = _material->getShader().getUniformLocation("mvp");
+	int mvpLocation = shader.getUniformLocation("mvp");
 	if (mvpLocation != -1)
 	{
 		glm::mat4 model = getTransform()->getTransformMatrix();
@@ -65,6 +68,27 @@ void PE::MeshRenderer::render(RenderContext* context)
 		glm::mat4 mvp = context->camera->getProjectionMatrix() * context->camera->getLookMatrix() * model;
 
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+	}
+
+	//set ambient light
+	int ambientLocation = shader.getUniformLocation("ambient");
+	if (ambientLocation != -1)
+	{
+		glUniform3fv(ambientLocation, 1, glm::value_ptr(context->lightingData->ambient.normalized()));
+	}
+
+	//add lights
+	unsigned int lightsToRender = (unsigned int)std::min(context->lightingData->lights.size(), LightingData::MAX_LIGHTS);
+	int lightNumLocation = shader.getUniformLocation("numLights");
+	if (lightNumLocation != -1)
+	{
+		glUniform1uiv(lightNumLocation, 1, &lightsToRender);
+	}
+	
+	//attempt to set the number of lights
+	for (size_t i = 0; i < lightsToRender; i++)
+	{
+		
 	}
 
 	//draw all the bound indices

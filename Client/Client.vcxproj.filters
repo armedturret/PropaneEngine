@@ -17,6 +17,7 @@
     <ClCompile Include="src\render\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\render\Model.cpp" />
+    <ClCompile Include="src\render\components\Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\render\components\MeshRenderer.h" />
@@ -40,5 +41,8 @@
     <ClInclude Include="include\render\Model.h" />
     <ClInclude Include="include\render\Mesh.h" />
     <ClInclude Include="include\render\RenderContext.h" />
+    <ClInclude Include="include\render\LightingData.h" />
+    <ClInclude Include="include\render\components\Light.h" />
+    <ClInclude Include="include\render\Color.h" />
   </ItemGroup>
 </Project>

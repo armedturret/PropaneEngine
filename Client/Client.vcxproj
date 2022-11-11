@@ -26,6 +26,7 @@
     <ClCompile Include="src\core\GameObject.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
+    <ClCompile Include="src\render\components\Light.cpp" />
     <ClCompile Include="src\render\components\MeshRenderer.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\render\imgui\imgui_impl_opengl3.cpp" />
@@ -42,10 +43,13 @@
     <ClInclude Include="include\core\components\Camera.h" />
     <ClInclude Include="include\core\components\NoclipController.h" />
     <ClInclude Include="include\core\GameObject.h" />
+    <ClInclude Include="include\render\Color.h" />
+    <ClInclude Include="include\render\components\Light.h" />
     <ClInclude Include="include\render\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="include\render\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="include\core\Transform.h" />
     <ClInclude Include="include\render\components\MeshRenderer.h" />
+    <ClInclude Include="include\render\LightingData.h" />
     <ClInclude Include="include\render\Material.h" />
     <ClInclude Include="include\render\Mesh.h" />
     <ClInclude Include="include\render\Model.h" />

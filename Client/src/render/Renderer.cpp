@@ -44,6 +44,7 @@ void PE::Renderer::render()
 	{
 		RenderContext context;
 		context.camera = _camera;
+		context.lightingData = &_lightingData;
 		renderable->render(&context);
 	}
 }
@@ -58,6 +59,22 @@ void PE::Renderer::cleanUp()
 void PE::Renderer::addRenderable(Renderable* renderable)
 {
 	_renderables.push_back(renderable);
+}
+
+void PE::Renderer::removeRenderable(Renderable* renderable)
+{
+	for (int i = 0; i < _renderables.size(); i++)
+	{
+		if (_renderables[i] == renderable)
+		{
+			_renderables.erase(_renderables.begin() + i);
+		}
+	}
+}
+
+PE::LightingData* PE::Renderer::getLightingData()
+{
+	return &_lightingData;
 }
 
 void PE::Renderer::setCamera(Camera* camera)
