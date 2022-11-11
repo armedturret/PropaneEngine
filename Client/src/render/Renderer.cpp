@@ -42,7 +42,9 @@ void PE::Renderer::render()
 	//render all renderables
 	for (auto renderable : _renderables)
 	{
-		renderable->render(_camera);
+		RenderContext context;
+		context.camera = _camera;
+		renderable->render(&context);
 	}
 }
 

@@ -5,6 +5,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 #include <unordered_set>
+#include <memory>
 
 namespace PE {
 	class GameObject;
@@ -61,6 +62,7 @@ namespace PE {
 		
 		Transform* _parent;
 		std::vector<Transform*> _children;
+		std::vector<GameObject*> _objectChildren;
 
 		glm::vec3 _position;
 		glm::vec3 _scale;

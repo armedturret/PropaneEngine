@@ -152,7 +152,11 @@ void PE::Transform::setParent(Transform* parent)
 		throw "Attempted to assign self as parent";
 	//remove self from parent
 	if (_parent != nullptr && _parent->indexOfChild(this) != -1)
-		_parent->_children.erase(_parent->_children.begin() + _parent->indexOfChild(this));
+	{
+		int index = _parent->indexOfChild(this) != -1;
+		_parent->_children.erase(_parent->_children.begin() + index);
+		_parent->_objectChildren.erase(_parent->_objectChildren.begin() + index);
+	}
 
 	//set the other to be this parent
 	_parent = parent;
@@ -164,7 +168,10 @@ void PE::Transform::setParent(Transform* parent)
 
 	//add self to parent
 	if (_parent != nullptr)
+	{
 		_parent->_children.push_back(this);
+		_parent->_objectChildren.push_back(_gameObject);
+	}
 }
 
 PE::GameObject* PE::Transform::getGameObject() const

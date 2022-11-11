@@ -57,6 +57,9 @@ int PE::Application::run(int argc, char** argv)
 	//set style to look cool
 	ImGui::StyleColorsDark();
 
+	//create the root object
+	_root = std::make_shared<GameObject>();
+
 	//create a material
 	Texture tex;
 	tex.loadFromFile("./resources/fridge.png", true,
@@ -85,10 +88,7 @@ int PE::Application::run(int argc, char** argv)
 	float yaw = 0.0f;
 
 	//initialize all game objects
-	for (int i = 0; i < _gameObjects.size(); i++)
-	{
-		_gameObjects[i].get()->onStart();
-	}
+	_root->onStart();
 
 	_initialized = true;
 
@@ -109,20 +109,13 @@ int PE::Application::run(int argc, char** argv)
 		ImGui::NewFrame();
 
 		//game object updates
-		for (int i = 0; i < _gameObjects.size(); i++)
-		{
-			_gameObjects[i].get()->_deltaTime = _deltaTime;
-			_gameObjects[i].get()->update();
-		}
+		_root->update(_deltaTime);
 
 		//call render pass
 		_renderer.render();
 
 		//call gui pass
-		for (int i = 0; i < _gameObjects.size(); i++)
-		{
-			_gameObjects[i].get()->onGUI();
-		}
+		_root->onGUI();
 		
 		/*TEMPORARY CODE REMOVE LATER*/
 		ImGui::Begin("DEBUG WINDOW");
@@ -159,9 +152,12 @@ PE::GameObject* PE::Application::createGameObject()
 	std::shared_ptr<GameObject> temp(new GameObject());
 
 	if (_initialized)
-		temp.get()->onStart();
+		temp->onStart();
 
 	GameObject* returnVal = temp.get();
+
+	//add this to be parented to the root object by default
+	temp->getTransform()->setParent(_root->getTransform());
 
 	//add to the list
 	_gameObjects.push_back(std::move(temp));
@@ -171,10 +167,7 @@ PE::GameObject* PE::Application::createGameObject()
 
 PE::Application::~Application()
 {
-	for (int i = 0; i < _gameObjects.size(); i++)
-	{
-		_gameObjects[i].get()->onDestroy();
-	}
+	_root->onDestroy();
 
 	//cleanup imgui stuff
 	ImGui_ImplOpenGL3_Shutdown();

@@ -29,19 +29,51 @@ namespace PE {
 			return returnVal;
 		}
 
+		template <class T>
+		std::vector<std::shared_ptr<T>>
+			getComponents()
+		{
+			std::vector<std::shared_ptr<T>> _foundComponents;
+			for (auto comp : _components)
+			{
+				if (dynamic_cast<T*>(comp.get()) != nullptr)
+				{
+					_foundComponents.push_back(comp);
+				}
+			}
+
+			return _foundComponents;
+		}
+
+		template <class T>
+		std::shared_ptr<T>
+			getComponent()
+		{
+			std::vector<std::shared_ptr<T>> _foundComponents;
+			for (auto comp : _components)
+			{
+				if (dynamic_cast<T*>(comp.get()) != nullptr)
+				{
+					return comp;
+				}
+			}
+
+			return nullptr;
+		}
+
 		GameObject();
 
+		std::vector<GameObject*> getChildren();
 		Transform* getTransform();
 	private:
 		void onStart();
-		void update();
+		void update(float deltaTime);
 		void onDestroy();
 		void onGUI();
 
 		friend class Application;
 
 		std::vector<std::shared_ptr<Component>> _components;
-		float _deltaTime;
 		bool _initialized;
 		Transform _transform;
 	};

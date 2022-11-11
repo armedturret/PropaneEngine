@@ -17,7 +17,7 @@ namespace PE {
 		void setMaterial(std::shared_ptr<Material> material);
 
 		void onStart() override;
-		void render(Camera* camera) override;
+		void render(RenderContext* context) override;
 		void update() override;
 		void onDestroy() override;
 	private:

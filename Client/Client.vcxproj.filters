@@ -39,5 +39,6 @@
     <ClInclude Include="include\uuid_v4\endianness.h" />
     <ClInclude Include="include\render\Model.h" />
     <ClInclude Include="include\render\Mesh.h" />
+    <ClInclude Include="include\render\RenderContext.h" />
   </ItemGroup>
 </Project>

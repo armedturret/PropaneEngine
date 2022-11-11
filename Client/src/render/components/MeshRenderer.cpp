@@ -45,7 +45,7 @@ void PE::MeshRenderer::onStart()
 	
 }
 
-void PE::MeshRenderer::render(Camera* camera)
+void PE::MeshRenderer::render(RenderContext* context)
 {
 	if (!_buffersCreated)
 		return;
@@ -62,7 +62,7 @@ void PE::MeshRenderer::render(Camera* camera)
 	{
 		glm::mat4 model = getTransform()->getTransformMatrix();
 
-		glm::mat4 mvp = camera->getProjectionMatrix() * camera->getLookMatrix() * model;
+		glm::mat4 mvp = context->camera->getProjectionMatrix() * context->camera->getLookMatrix() * model;
 
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 	}

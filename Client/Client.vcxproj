@@ -50,6 +50,7 @@
     <ClInclude Include="include\render\Mesh.h" />
     <ClInclude Include="include\render\Model.h" />
     <ClInclude Include="include\render\Renderable.h" />
+    <ClInclude Include="include\render\RenderContext.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\render\Shader.h" />
     <ClInclude Include="include\render\stb_image.h" />
