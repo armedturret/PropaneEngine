@@ -74,7 +74,7 @@ int PE::Application::run(int argc, char** argv)
 
 	//create a light
 	GameObject* lightObject = createGameObject();
-	lightObject->getTransform()->setPosition(glm::vec3(0.0f, 1.0f, -1.0f));
+	lightObject->getTransform()->setPosition(glm::vec3(-3.0f, 1.0f, -1.0f));
 	lightObject->addComponent<Light>()->setLight(Light::TYPE::POINT, BLUE);
 
 	//create a model object
