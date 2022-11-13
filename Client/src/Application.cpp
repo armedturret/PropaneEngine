@@ -16,7 +16,8 @@ _renderer(),
 _window(),
 _dimensions(800, 600),
 _deltaTime(0.0),
-_previousTime(0.0)
+_previousTime(0.0),
+_selectedObject(nullptr)
 {
 
 }
@@ -139,10 +140,16 @@ int PE::Application::run(int argc, char** argv)
 		_root->onGUI();
 		
 		//draw scene graph
-		ImGui::Begin("Scene Graph");
+		ImGui::Begin("Scene");
 		for (auto child : _root->getChildren())
 		{
 			drawSceneGraph(child);
+		}
+		ImGui::End();
+		ImGui::Begin("Inspector");
+		if (_selectedObject != nullptr)
+		{
+			ImGui::Text(_selectedObject->getName().c_str());
 		}
 		ImGui::End();
 
@@ -208,12 +215,22 @@ PE::Renderer& PE::Application::getRenderer()
 
 void PE::Application::drawSceneGraph(GameObject* node)
 {
-	ImGuiTreeNodeFlags flags = 0;
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
 	if (node->getChildren().size() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf;
+	if (node == _selectedObject)
+		flags |= ImGuiTreeNodeFlags_Selected;
 	ImGui::PushID(node);
-	if (ImGui::TreeNodeEx(node->getName().c_str(), flags))
+
+	bool expanded = ImGui::TreeNodeEx(node->getName().c_str(), flags);
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 	{
+		_selectedObject = node;
+	}
+
+	if (expanded)
+	{
+		
 		for (auto child : node->getChildren())
 		{
 			drawSceneGraph(child);

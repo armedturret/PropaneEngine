@@ -81,6 +81,9 @@ void PE::Model::loadFromFile(std::string modelFile)
 
 	//create child nodes
 	_rootNode = convertNode(scene->mRootNode);
+	//change root node name to file name
+	_rootNode.name = modelFile.substr(modelFile.find_last_of("/\\") + 1);
+	_rootNode.name = _rootNode.name.substr(0, _rootNode.name.find_last_of('.'));
 
 	cout << "Sucessfully loaded model" << endl;
 }

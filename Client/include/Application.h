@@ -41,6 +41,7 @@ namespace PE {
 		GLFWwindow* _window;
 		glm::ivec2 _dimensions;
 
+		GameObject* _selectedObject;
 		std::shared_ptr<GameObject> _root;
 		std::vector<std::shared_ptr<GameObject>> _gameObjects;
 
