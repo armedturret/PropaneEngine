@@ -93,6 +93,7 @@ int PE::Application::run(int argc, char** argv)
 	model.loadFromFile("./resources/door.fbx");
 	model.setMaterials({ metalMat, doorMat });
 	GameObject* doorObject = model.createInstance();
+	model.createInstance()->getTransform()->setScale(glm::vec3(0.01f));
 	doorObject->getTransform()->setScale(glm::vec3(0.01f));
 
 	//create another game object for a camera
@@ -207,9 +208,10 @@ PE::Renderer& PE::Application::getRenderer()
 
 void PE::Application::drawSceneGraph(GameObject* node)
 {
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap;
+	ImGuiTreeNodeFlags flags = 0;
 	if (node->getChildren().size() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf;
+	ImGui::PushID(node);
 	if (ImGui::TreeNodeEx(node->getName().c_str(), flags))
 	{
 		for (auto child : node->getChildren())
@@ -218,4 +220,5 @@ void PE::Application::drawSceneGraph(GameObject* node)
 		}
 		ImGui::TreePop();
 	}
+	ImGui::PopID();
 }
