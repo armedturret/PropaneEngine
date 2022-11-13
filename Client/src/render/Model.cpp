@@ -115,9 +115,20 @@ PE::Model::Node PE::Model::convertNode(aiNode* assimpNode)
 	{
 		node.children.push_back(convertNode(assimpNode->mChildren[i]));
 	}
+	
+	//store RELATIVE transform
+	glm::mat4 transform;
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			transform[x][y] = assimpNode->mTransformation[x][y];
+		}
+	}
+	node.transform = transform;
 
-	//TODO: add proper node transforms
-	node.transform = glm::mat4(1.0f);
+	//store the name
+	node.name = assimpNode->mName.C_Str();
 
 	return node;
 }
@@ -134,6 +145,12 @@ PE::GameObject* PE::Model::createObjectFromNode(Node* node)
 		meshRenderer->setMaterial(_materials[meshData.modelMaterialIndex]);
 		meshRenderer->setMesh(meshData);
 	}
+
+	//set relative transform
+	nodeObject->getTransform()->setRelativeTransformMatrix(node->transform);
+
+	//set name
+	nodeObject->setName(node->name);
 
 	//process child nodes
 	for (unsigned int i = 0; i < node->children.size(); i++)

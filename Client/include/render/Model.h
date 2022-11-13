@@ -26,6 +26,7 @@ namespace PE {
 		struct Node {
 			std::vector<unsigned int> targetMeshes;
 			std::vector<Node> children;
+			std::string name;
 			glm::mat4 transform;
 		};
 

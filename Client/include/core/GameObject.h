@@ -65,6 +65,9 @@ namespace PE {
 
 		std::vector<GameObject*> getChildren();
 		Transform* getTransform();
+
+		std::string getName();
+		void setName(std::string nam);
 	private:
 		void onStart();
 		void update(float deltaTime);
@@ -74,6 +77,7 @@ namespace PE {
 		friend class Application;
 
 		std::vector<std::shared_ptr<Component>> _components;
+		std::string _name;
 		bool _initialized;
 		Transform _transform;
 	};

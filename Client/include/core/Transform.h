@@ -46,6 +46,8 @@ namespace PE {
 		glm::vec3 getLeft() const;
 		
 		glm::mat4 getTransformMatrix();
+		//assumes uniform transform from parent transform
+		void setRelativeTransformMatrix(glm::mat4 transform);
 
 		void setParent(Transform* parent);
 
@@ -71,5 +73,8 @@ namespace PE {
 		glm::vec3 _localPosition;
 		glm::vec3 _localScale;
 		glm::quat _localRotation;
+
+		bool _dirty;
+		glm::mat4 _transform;
 	};
 }

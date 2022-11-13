@@ -10,7 +10,9 @@ PE::Transform::Transform() :
 	_gameObject(nullptr),
 	_localPosition(0.0f),
 	_localRotation(glm::vec3(0.0f)),
-	_localScale(1.0f)
+	_localScale(1.0f),
+	_transform(1.0f),
+	_dirty(false)
 {
 
 }
@@ -31,6 +33,8 @@ void PE::Transform::setPosition(glm::vec3 newPos)
 
 	for (auto child : _children)
 		child->setLocalPosition(child->getLocalPosition());
+
+	_dirty = true;
 }
 
 glm::vec3 PE::Transform::getScale() const
@@ -52,6 +56,8 @@ void PE::Transform::setScale(glm::vec3 scale)
 
 	for (auto child : _children)
 		child->setLocalScale(child->getLocalScale());
+
+	_dirty = true;
 }
 
 glm::quat PE::Transform::getRotation() const
@@ -70,6 +76,8 @@ void PE::Transform::setRotation(glm::quat rotation)
 
 	for (auto child : _children)
 		child->setLocalRotation(child->getLocalRotation());
+
+	_dirty = true;
 }
 
 glm::vec3 PE::Transform::getLocalPosition() const
@@ -141,9 +149,26 @@ glm::vec3 PE::Transform::getLeft() const
 
 glm::mat4 PE::Transform::getTransformMatrix()
 {
-	return glm::translate(glm::mat4(1.0f), _position)
-		* glm::toMat4(_rotation)
-		* glm::scale(glm::mat4(1.0f), _scale);
+	if (_dirty)
+	{
+		_transform = glm::translate(glm::mat4(1.0f), _position);
+		_transform *= glm::toMat4(_rotation);
+		_transform = glm::scale(_transform, _scale);
+		_dirty = false;
+	}
+
+	return _transform;
+}
+
+void PE::Transform::setRelativeTransformMatrix(glm::mat4 transform)
+{
+	//decompose the transform into local position, rotation, and scale
+	glm::vec3 translation = transform[3];
+	glm::vec3 scale = glm::vec3(transform[0].length(), transform[1].length(), transform[2].length());
+	glm::mat3 rotation = glm::mat3(transform[0] / scale[0], transform[1] / scale[1], transform[2] / scale[2]);
+	setLocalPosition(translation);
+	setLocalScale(scale);
+	setLocalRotation(glm::quat(rotation));
 }
 
 void PE::Transform::setParent(Transform* parent)

@@ -63,26 +63,33 @@ int PE::Application::run(int argc, char** argv)
 	_renderer.getLightingData()->ambient = Color(100, 100, 100);
 
 	//create a material
-	Texture tex;
-	tex.loadFromFile("./resources/fridge.png", true,
+	Texture doorTex;
+	doorTex.loadFromFile("./resources/door.png", true,
 		PE::Texture::WRAP_MODE::CLAMP_EDGE,
 		PE::Texture::FILTERING::NEAREST_MIPMAP_NEAREST,
 		PE::Texture::FILTERING::NEAREST);
 	Shader shader;
 	shader.compile("./shaders/default.vert", "./shaders/default.frag");
-	std::shared_ptr<Material> mat(new Material({ tex }, {}, WHITE, shader));
+	std::shared_ptr<Material> doorMat(new Material({ doorTex }, {}, WHITE, shader));
+
+	Texture metal;
+	metal.loadFromFile("./resources/metal.png", true,
+		PE::Texture::WRAP_MODE::CLAMP_EDGE,
+		PE::Texture::FILTERING::NEAREST_MIPMAP_NEAREST,
+		PE::Texture::FILTERING::NEAREST);
+	std::shared_ptr<Material> metalMat(new Material({ metal }, {}, WHITE, shader));
 
 	//create a light
 	GameObject* lightObject = createGameObject();
 	lightObject->getTransform()->setPosition(glm::vec3(-3.0f, 1.0f, 0.0f));
-	lightObject->addComponent<Light>()->setLight(Light::TYPE::POINT, BLUE);
+	lightObject->addComponent<Light>()->setLight(Light::TYPE::POINT, Color(100, 100, 100));
 
 	//create a model object
 	Model model;
-	model.loadFromFile("./resources/fridge.fbx");
-	model.setMaterials({ mat });
-	GameObject* fridgeObject = model.createInstance();
-	fridgeObject->getTransform()->setScale(glm::vec3(0.01f));
+	model.loadFromFile("./resources/door.fbx");
+	model.setMaterials({ metalMat, doorMat });
+	GameObject* doorObject = model.createInstance();
+	doorObject->getTransform()->setScale(glm::vec3(0.01f));
 
 	//create another game object for a camera
 	GameObject* cameraObject = createGameObject();
@@ -124,12 +131,6 @@ int PE::Application::run(int argc, char** argv)
 
 		//call gui pass
 		_root->onGUI();
-		
-		/*TEMPORARY CODE REMOVE LATER*/
-		ImGui::Begin("DEBUG WINDOW");
-		ImGui::SliderAngle("Yaw", &yaw);
-		ImGui::End();
-		fridgeObject->getTransform()->setRotation(glm::quat(glm::vec3(0.0f, yaw, 0.0f)));
 
 		//render imgui stuff
 		ImGui::Render();

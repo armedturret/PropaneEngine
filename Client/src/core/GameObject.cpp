@@ -3,10 +3,21 @@
 using namespace PE;
 
 PE::GameObject::GameObject() : _initialized(false),
-_transform()
+_transform(),
+_name("GameObject")
 {
 	//link transform to this
 	_transform._gameObject = this;
+}
+
+std::string PE::GameObject::getName()
+{
+	return _name;
+}
+
+void PE::GameObject::setName(std::string name)
+{
+	_name = name;
 }
 
 void PE::GameObject::onStart()
