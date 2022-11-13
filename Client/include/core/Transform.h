@@ -55,7 +55,6 @@ namespace PE {
 
 		Transform* getParent();
 		std::vector<Transform*> getChildren();
-
 	private:
 		int indexOfChild(Transform* child);
 		friend class GameObject;

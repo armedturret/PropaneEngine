@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include <iostream>
+
 #include "imgui.h"
 #include "render/imgui/imgui_impl_opengl3.h"
 #include "render/imgui/imgui_impl_glfw.h"
@@ -12,7 +14,7 @@
 PE::Application::Application() : _initialized(false),
 _renderer(),
 _window(),
-_dimensions(640, 480),
+_dimensions(800, 600),
 _deltaTime(0.0),
 _previousTime(0.0)
 {
@@ -59,6 +61,7 @@ int PE::Application::run(int argc, char** argv)
 
 	//create the root object
 	_root = std::make_shared<GameObject>();
+	_root->setName("Scene Root");
 	/*TEMP CODE START*/
 	_renderer.getLightingData()->ambient = Color(100, 100, 100);
 
@@ -81,6 +84,7 @@ int PE::Application::run(int argc, char** argv)
 
 	//create a light
 	GameObject* lightObject = createGameObject();
+	lightObject->setName("Light");
 	lightObject->getTransform()->setPosition(glm::vec3(-3.0f, 1.0f, 0.0f));
 	lightObject->addComponent<Light>()->setLight(Light::TYPE::POINT, Color(100, 100, 100));
 
@@ -93,6 +97,7 @@ int PE::Application::run(int argc, char** argv)
 
 	//create another game object for a camera
 	GameObject* cameraObject = createGameObject();
+	cameraObject->setName("Camera");
 	cameraObject->addComponent<Camera>();
 	auto nc = cameraObject->addComponent<NoclipController>();
 	nc->setSpeed(4.0f);
@@ -131,6 +136,14 @@ int PE::Application::run(int argc, char** argv)
 
 		//call gui pass
 		_root->onGUI();
+		
+		//draw scene graph
+		ImGui::Begin("Scene Graph");
+		for (auto child : _root->getChildren())
+		{
+			drawSceneGraph(child);
+		}
+		ImGui::End();
 
 		//render imgui stuff
 		ImGui::Render();
@@ -190,4 +203,19 @@ PE::Application::~Application()
 PE::Renderer& PE::Application::getRenderer()
 {
 	return _renderer;
+}
+
+void PE::Application::drawSceneGraph(GameObject* node)
+{
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap;
+	if (node->getChildren().size() == 0)
+		flags |= ImGuiTreeNodeFlags_Leaf;
+	if (ImGui::TreeNodeEx(node->getName().c_str(), flags))
+	{
+		for (auto child : node->getChildren())
+		{
+			drawSceneGraph(child);
+		}
+		ImGui::TreePop();
+	}
 }

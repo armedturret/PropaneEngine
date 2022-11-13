@@ -34,6 +34,7 @@ namespace PE {
 		Application(Application const&) = delete;
 		void operator=(Application const&) = delete;
 	private:
+		void drawSceneGraph(GameObject* node);
 		Application();
 
 		//window stuff

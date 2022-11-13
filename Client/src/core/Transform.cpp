@@ -178,7 +178,7 @@ void PE::Transform::setParent(Transform* parent)
 	//remove self from parent
 	if (_parent != nullptr && _parent->indexOfChild(this) != -1)
 	{
-		int index = _parent->indexOfChild(this) != -1;
+		int index = _parent->indexOfChild(this);
 		_parent->_children.erase(_parent->_children.begin() + index);
 		_parent->_objectChildren.erase(_parent->_objectChildren.begin() + index);
 	}
@@ -218,7 +218,8 @@ int PE::Transform::indexOfChild(Transform* child)
 {
 	for (int i = 0; i < _children.size(); i++)
 	{
-		if (_children[i] == child)
+		Transform* compareChild = _children[i];
+		if (compareChild == child)
 			return i;
 	}
 
