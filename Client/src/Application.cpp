@@ -38,14 +38,14 @@ int PE::Application::run(int argc, char** argv)
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //do not allow window resizing
 	glfwWindowHint(GLFW_SAMPLES, 4); //4 samples for antialiasing
 
-	_window = glfwCreateWindow(_dimensions[0], _dimensions[1], "Skeggy 3 Real??????!?!?", NULL, NULL);
+	_window = glfwCreateWindow(_dimensions[0], _dimensions[1], "Skeggy 3 Real??????!?!?", NULL, NULL);s
 	if (!_window)
 	{
 		throw "Window failed to initialize";
 	}
 
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(1); //vsync enabled, set to 0 for no vsync
+	glfwSwapInterval(0); //vsync enabled, set to 0 for no vsync
 
 	Input::initializeCallbacks(_window);
 
@@ -118,6 +118,7 @@ int PE::Application::run(int argc, char** argv)
 	{
 		_deltaTime = (float)glfwGetTime() - _previousTime;
 		_previousTime = (float)glfwGetTime();
+		float fps = 1.0f / _deltaTime;
 
 		//reset delta for mouse input
 		Input::_mouseData.delta = glm::vec2(0.0f);
@@ -160,6 +161,9 @@ int PE::Application::run(int argc, char** argv)
 			_selectedObject->getTransform()->setScale(scale);
 			_selectedObject->getTransform()->setRotation(glm::quat(glm::radians(rotation)));
 		}
+		ImGui::End();
+		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("%0.2lf FPS", fps);
 		ImGui::End();
 
 		//render imgui stuff
