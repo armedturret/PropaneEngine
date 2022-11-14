@@ -151,15 +151,15 @@ int PE::Application::run(int argc, char** argv)
 		if (_selectedObject != nullptr)
 		{
 			ImGui::Text(_selectedObject->getName().c_str());
-			glm::vec3 position = _selectedObject->getTransform()->getPosition();
-			glm::vec3 rotation = glm::degrees(glm::eulerAngles(_selectedObject->getTransform()->getRotation()));
-			glm::vec3 scale = _selectedObject->getTransform()->getScale();
+			glm::vec3 position = _selectedObject->getTransform()->getLocalPosition();
+			glm::vec3 rotation = glm::degrees(glm::eulerAngles(_selectedObject->getTransform()->getLocalRotation()));
+			glm::vec3 scale = _selectedObject->getTransform()->getLocalScale();
 			ImGui::DragFloat3("Position", &position[0], 0.1f);
 			ImGui::DragFloat3("Rotation", &rotation[0], 0.1f);
 			ImGui::DragFloat3("Scale", &scale[0], 0.1f);
-			_selectedObject->getTransform()->setPosition(position);
-			_selectedObject->getTransform()->setScale(scale);
-			_selectedObject->getTransform()->setRotation(glm::quat(glm::radians(rotation)));
+			_selectedObject->getTransform()->setLocalPosition(position);
+			_selectedObject->getTransform()->setLocalScale(scale);
+			_selectedObject->getTransform()->setLocalRotation(glm::quat(glm::radians(rotation)));
 		}
 		ImGui::End();
 		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize);
