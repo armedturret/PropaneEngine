@@ -94,7 +94,6 @@ int PE::Application::run(int argc, char** argv)
 	model.loadFromFile("./resources/door.fbx");
 	model.setMaterials({ metalMat, doorMat });
 	GameObject* doorObject = model.createInstance();
-	model.createInstance()->getTransform()->setScale(glm::vec3(0.01f));
 	doorObject->getTransform()->setScale(glm::vec3(0.01f));
 
 	//create another game object for a camera
@@ -152,14 +151,19 @@ int PE::Application::run(int argc, char** argv)
 		{
 			ImGui::Text(_selectedObject->getName().c_str());
 			glm::vec3 position = _selectedObject->getTransform()->getLocalPosition();
-			glm::vec3 rotation = glm::degrees(glm::eulerAngles(_selectedObject->getTransform()->getLocalRotation()));
+			glm::vec3 startRotation = glm::degrees(glm::eulerAngles(_selectedObject->getTransform()->getLocalRotation()));
+			glm::vec3 deltaRotation = startRotation;
 			glm::vec3 scale = _selectedObject->getTransform()->getLocalScale();
 			ImGui::DragFloat3("Position", &position[0], 0.1f);
-			ImGui::DragFloat3("Rotation", &rotation[0], 0.1f);
+			ImGui::DragFloat3("Rotation", &deltaRotation[0], 0.1f);
 			ImGui::DragFloat3("Scale", &scale[0], 0.1f);
+			if (deltaRotation.y == 90.0f)
+				deltaRotation.y += 0.000001f;
+			deltaRotation -= startRotation;
 			_selectedObject->getTransform()->setLocalPosition(position);
 			_selectedObject->getTransform()->setLocalScale(scale);
-			_selectedObject->getTransform()->setLocalRotation(glm::quat(glm::radians(rotation)));
+			glm::quat result = glm::quat(glm::radians(deltaRotation)) * _selectedObject->getTransform()->getLocalRotation();
+			_selectedObject->getTransform()->setLocalRotation(result);
 		}
 		ImGui::End();
 		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize);

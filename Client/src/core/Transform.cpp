@@ -64,7 +64,7 @@ glm::quat PE::Transform::getRotation() const
 void PE::Transform::setRotation(glm::quat rotation)
 {
 	if (_parent != nullptr)
-		_localRotation = glm::inverse(_parent->_rotation) * rotation;
+		_localRotation = rotation * glm::inverse(_parent->_rotation);
 	else
 		_localRotation = rotation;
 
@@ -108,7 +108,7 @@ glm::quat PE::Transform::getLocalRotation() const
 void PE::Transform::setLocalRotation(glm::quat rotation)
 {
 	_localRotation = rotation;
-	updateRotationInternal(_parent->getRotation() * rotation);
+	updateRotationInternal(rotation * _parent->getRotation());
 }
 
 glm::vec3 PE::Transform::getForward() const
@@ -155,7 +155,20 @@ glm::mat4 PE::Transform::getTransformMatrix()
 	return _transform;
 }
 
-void PE::Transform::setRelativeTransformMatrix(glm::mat4 transform)
+void PE::Transform::setTransformMatrix(glm::mat4 transform)
+{
+	glm::vec3 translation;
+	glm::vec3 scale;
+	glm::quat rotation;
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(transform, scale, rotation, translation, skew, perspective);
+	setPosition(translation);
+	setScale(scale);
+	setRotation(glm::quat(rotation));
+}
+
+void PE::Transform::setRelativeTransformMatrix(glm::mat4 localTransform)
 {
 	//decompose the transform into local position, rotation, and scale
 	glm::vec3 translation;
@@ -163,7 +176,7 @@ void PE::Transform::setRelativeTransformMatrix(glm::mat4 transform)
 	glm::quat rotation;
 	glm::vec3 skew;
 	glm::vec4 perspective;
-	glm::decompose(transform, scale, rotation, translation, skew, perspective);
+	glm::decompose(localTransform, scale, rotation, translation, skew, perspective);
 	setLocalPosition(translation);
 	setLocalScale(scale);
 	setLocalRotation(glm::quat(rotation));

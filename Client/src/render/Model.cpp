@@ -34,9 +34,9 @@ void PE::Model::loadFromFile(std::string modelFile)
 	_meshes.reserve((size_t)scene->mNumMeshes);
 	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
 	{
-		cout << "Loading mesh (" << i + 1 << "/" << scene->mNumMeshes << ")" << endl;
+		cout << "Loading mesh (" << i + 1 << "/" << scene->mNumMeshes << "): " << scene->mMeshes[i]->mName.C_Str() << endl;
 		aiMesh* mesh = scene->mMeshes[i];
-		Mesh meshData{ {}, {},  mesh->mMaterialIndex};
+		Mesh meshData{ {}, {}, {},  mesh->mMaterialIndex };
 
 		//add vertices
 		for (unsigned int vert = 0; vert < mesh->mNumVertices; vert++)
@@ -76,6 +76,48 @@ void PE::Model::loadFromFile(std::string modelFile)
 			}
 		}
 
+		//store influences in vector for writing later
+		vector<VertexInfluences> verticesInfluences;
+		verticesInfluences.resize(meshData.vertices.size());
+
+		//add bones
+		for (unsigned int boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++)
+		{
+			Bone bone;
+			bone.name = mesh->mBones[boneIdx]->mName.C_Str();
+			//add the vertex weights to corresponding vertices
+			for (unsigned int weightIdx = 0; weightIdx < mesh->mBones[boneIdx]->mNumWeights; weightIdx++)
+			{
+				aiVertexWeight* weight = mesh->mBones[boneIdx]->mWeights;
+				
+				//tell the vertex what bone influences them
+				verticesInfluences[weight->mVertexId].boneIndices.push_back(boneIdx);
+				verticesInfluences[weight->mVertexId].weights.push_back(weight->mWeight);
+			}
+
+			meshData.bones.push_back(bone);
+		}
+
+		//bake the influences data into the vertices
+		for (int iflIdx = 0; iflIdx < verticesInfluences.size(); iflIdx++)
+		{
+			VertexInfluences influences = verticesInfluences[iflIdx];
+			for (int j = 0; j < MAX_BONE_INFLUENCE; j++)
+			{
+				//fill to max influence size
+				if (j < influences.boneIndices.size())
+				{
+					meshData.vertices[iflIdx].boneIds[j] = influences.boneIndices[j];
+					meshData.vertices[iflIdx].boneWeights[j] = influences.weights[j];
+				}
+				else
+				{
+					meshData.vertices[iflIdx].boneIds[j] = -1;
+					meshData.vertices[iflIdx].boneWeights[j] = 0.0f;
+				}
+			}
+		}
+
 		_meshes.push_back(meshData);
 	}
 
@@ -100,7 +142,7 @@ int PE::Model::getRequiredMaterialCount()
 
 PE::GameObject * PE::Model::createInstance()
 {
-	return createObjectFromNode(&_rootNode);
+	return createObjectFromNode(&_rootNode, nullptr);
 }
 
 PE::Model::Node PE::Model::convertNode(aiNode* assimpNode)
@@ -136,9 +178,12 @@ PE::Model::Node PE::Model::convertNode(aiNode* assimpNode)
 	return node;
 }
 
-PE::GameObject* PE::Model::createObjectFromNode(Node* node)
+PE::GameObject* PE::Model::createObjectFromNode(Node* node, GameObject* root)
 {
 	GameObject* nodeObject = Application::getInstance().createGameObject();
+
+	//set name
+	nodeObject->setName(node->name);
 
 	//create mesh renderers for each mesh
 	for (unsigned int i = 0; i < node->targetMeshes.size(); i++)
@@ -147,18 +192,20 @@ PE::GameObject* PE::Model::createObjectFromNode(Node* node)
 		MeshRenderer* meshRenderer = nodeObject->addComponent<MeshRenderer>();
 		meshRenderer->setMaterial(_materials[meshData.modelMaterialIndex]);
 		meshRenderer->setMesh(meshData);
+		meshRenderer->setArmatureRoot(root->getTransform());
 	}
 
 	//set relative transform
 	nodeObject->getTransform()->setRelativeTransformMatrix(node->transform);
 
-	//set name
-	nodeObject->setName(node->name);
+	//set root if not existent already
+	if (root == nullptr)
+		root = nodeObject;
 
 	//process child nodes
 	for (unsigned int i = 0; i < node->children.size(); i++)
 	{
-		GameObject* child = createObjectFromNode(&node->children[i]);
+		GameObject* child = createObjectFromNode(&node->children[i], root);
 		child->getTransform()->setParent(nodeObject->getTransform());
 	}
 	

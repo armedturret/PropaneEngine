@@ -14,6 +14,7 @@
 
 #include "render/Shader.h"
 #include "render/LightingData.h"
+#include "core/GameObject.h"
 
 using namespace std;
 
@@ -22,7 +23,8 @@ PE::MeshRenderer::MeshRenderer():
 	_vbo(0),
 	_ebo(0),
 	_buffersCreated(false),
-	_material(nullptr)
+	_material(nullptr),
+	_armatureRoot(nullptr)
 {
 
 }
@@ -41,6 +43,11 @@ void PE::MeshRenderer::setMaterial(std::shared_ptr<Material> material)
 	reloadData();
 }
 
+void PE::MeshRenderer::setArmatureRoot(Transform* root)
+{
+	_armatureRoot = root;
+}
+
 void PE::MeshRenderer::onStart()
 {
 	
@@ -50,6 +57,12 @@ void PE::MeshRenderer::render(RenderContext* context)
 {
 	if (!_buffersCreated)
 		return;
+
+	//find armature data if not existent already
+	if(_armatureRoot != nullptr && _bonesInfo.size() != _mesh.bones.size())
+		updateBoneInfo();
+
+	updateBones();
 
 	//use the material
 	_material->useMaterial();
@@ -84,7 +97,7 @@ void PE::MeshRenderer::render(RenderContext* context)
 	int lightsToRender = (int)std::min(context->lightingData->lights.size(), LightingData::MAX_LIGHTS);
 	int lightNumLocation = shader.getUniformLocation("numLights");
 	glUniform1iv(lightNumLocation, 1, &lightsToRender);
-	
+
 	//attempt to set the number of lights
 	for (size_t i = 0; i < lightsToRender; i++)
 	{
@@ -93,6 +106,14 @@ void PE::MeshRenderer::render(RenderContext* context)
 		int colorLoc = shader.getUniformLocation("pointLights[" + to_string(i) + "].color");
 		glUniform3fv(posLoc, 1, glm::value_ptr(light->getTransform()->getPosition()));
 		glUniform3fv(colorLoc, 1, glm::value_ptr(light->getColor().normalized()));
+	}
+
+	//set bone transforms
+	for (size_t i = 0; i < _boneTransforms.size(); i++)
+	{
+		glm::mat4 boneTransform = _boneTransforms[i];
+		int boneTransformLoc = shader.getUniformLocation("bones[" + to_string(i) + "]");
+		glUniformMatrix4fv(boneTransformLoc, 1, GL_FALSE, glm::value_ptr(boneTransform));
 	}
 
 	//draw all the bound indices
@@ -148,7 +169,7 @@ void PE::MeshRenderer::reloadData()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _mesh.indices.size() * sizeof(unsigned int), &_mesh.indices[0], GL_STATIC_DRAW);
 
 	//determine if position data needs to be written
-	int vertPos = _material->getShader().getAttribLocation("vertPos");
+	int vertPos = _material->getShader().getAttribLocation("pos");
 	if (vertPos != -1)
 	{
 		//3 values of type float, not normalized with a gap of one Vertex object with an offset of the position location
@@ -174,6 +195,59 @@ void PE::MeshRenderer::reloadData()
 		glEnableVertexAttribArray(uvPos);
 	}
 	
+	//bone data WOOO
+	int boneIndexPos = _material->getShader().getAttribLocation("boneIds");
+	int boneWeightPos = _material->getShader().getAttribLocation("weights");
+	if (boneIndexPos != -1 && boneWeightPos != -1)
+	{
+		//indicies are ints and weights are floats
+		glVertexAttribPointer(boneIndexPos, MAX_BONE_INFLUENCE, GL_INT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, boneIds));
+		glEnableVertexAttribArray(boneIndexPos);
+
+		glVertexAttribPointer(boneWeightPos, MAX_BONE_INFLUENCE, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, boneWeights));
+		glEnableVertexAttribArray(boneWeightPos);
+	}
+
+
 	//unuse the vao to prevent accidental modification
 	glBindVertexArray(0);
+}
+
+void PE::MeshRenderer::updateBones()
+{
+	glm::mat4 inverseArmatureTransform = glm::inverse(_armatureRoot->getTransformMatrix());
+
+	//go through bone infos and update the transform if it changed
+	for (int i = 0; i < _bonesInfo.size(); i++)
+	{
+		//check if transform changed at all
+		//if (_bonesInfo[i].transform->getTransformMatrix() != _bonesInfo[i].lastTransform)
+		//{
+			//set transform to be relative to model armature root (inverse of that transform times this transform)
+		_boneTransforms[i] = inverseArmatureTransform * _bonesInfo[i].transform->getTransformMatrix();
+		//}
+	}
+}
+
+void PE::MeshRenderer::updateBoneInfo()
+{
+	for (int i = 0; i < _mesh.bones.size(); i++)
+	{
+		Bone bone = _mesh.bones[i];
+		BoneData boneData;
+		boneData.name = bone.name;
+		boneData.lastTransform = glm::mat4(1.0f);
+
+		//get transform data by search
+		boneData.transform = nullptr;
+		GameObject* targetObject = _armatureRoot->getGameObject()->findChildByName("Armature")->findChildByName(bone.name);
+		if (targetObject != nullptr)
+			boneData.transform = targetObject->getTransform();
+		else
+			cerr << "Unable to find bone \"" << bone.name << "\" for object " << getGameObject()->getName() << endl;
+		_bonesInfo.push_back(boneData);
+	}
+
+	//initialize transforms to be identity
+	_boneTransforms.resize(_mesh.bones.size(), glm::mat4(1.0f));
 }

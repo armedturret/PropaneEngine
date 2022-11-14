@@ -46,8 +46,9 @@ namespace PE {
 		glm::vec3 getLeft() const;
 		
 		glm::mat4 getTransformMatrix();
+		void setTransformMatrix(glm::mat4 transform);
 		//assumes uniform transform from parent transform
-		void setRelativeTransformMatrix(glm::mat4 transform);
+		void setRelativeTransformMatrix(glm::mat4 localTransform);
 
 		void setParent(Transform* parent);
 

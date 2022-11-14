@@ -10,6 +10,25 @@ _name("GameObject")
 	_transform._gameObject = this;
 }
 
+GameObject* PE::GameObject::findChildByName(std::string name)
+{
+	//check children
+	for (auto child : getChildren())
+	{
+		//check if it is a match
+		if (child->_name == name)
+			return child;
+
+		//check child's children
+		GameObject* result = child->findChildByName(name);
+		if (result != nullptr)
+			return result;
+	}
+
+	//none found
+	return nullptr;
+}
+
 std::string PE::GameObject::getName()
 {
 	return _name;

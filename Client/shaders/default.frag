@@ -38,7 +38,8 @@ void main()
 	vec3 norm = normalize(normal);
 
 	vec4 result = texture(diffuseTex0, uvCoord) * vec4(ambient, 1.0);
-	for(int i = 0; i < numLights; i++){
+	for(int i = 0; i < numLights; i++)
+	{
 		result += vec4(calcPointLight(pointLights[i], norm), 0.0);
 	}
 	result *= color;

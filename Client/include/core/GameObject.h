@@ -63,6 +63,8 @@ namespace PE {
 
 		GameObject();
 
+		GameObject* findChildByName(std::string name);
+
 		std::vector<GameObject*> getChildren();
 		Transform* getTransform();
 

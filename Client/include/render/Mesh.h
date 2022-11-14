@@ -4,24 +4,24 @@
 #include <vector>
 
 namespace PE {
+	//only 4 verts cann affect any bone
+	const int MAX_BONE_INFLUENCE = 4;
+
 	struct Vertex {
 		glm::vec3 position;
 		glm::vec3 normal;
 		glm::vec2 texCoord;
-	};
 
-	struct VertexWeight {
-		unsigned int index;
-		float weight;
+		int boneIds[MAX_BONE_INFLUENCE];
+		float boneWeights[MAX_BONE_INFLUENCE];
 	};
 
 	struct Bone {
 		std::string name;
-
-		std::vector<VertexWeight> vertexWeights;
 	};
 
 	struct Mesh {
+		std::vector<Bone> bones;
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 

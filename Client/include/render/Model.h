@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 
 struct aiNode;
@@ -30,9 +31,14 @@ namespace PE {
 			glm::mat4 transform;
 		};
 
+		struct VertexInfluences {
+			std::vector<int> boneIndices;
+			std::vector<float> weights;
+		};
+
 		Node convertNode(aiNode* assimpNode);
 
-		GameObject* createObjectFromNode(Node* node);
+		GameObject* createObjectFromNode(Node* node, GameObject* root);
 
 		std::vector<Mesh> _meshes;
 		std::vector<std::shared_ptr<Material>> _materials;
