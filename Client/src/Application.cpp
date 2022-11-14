@@ -38,7 +38,7 @@ int PE::Application::run(int argc, char** argv)
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //do not allow window resizing
 	glfwWindowHint(GLFW_SAMPLES, 4); //4 samples for antialiasing
 
-	_window = glfwCreateWindow(_dimensions[0], _dimensions[1], "Skeggy 3 Real??????!?!?", NULL, NULL);s
+	_window = glfwCreateWindow(_dimensions[0], _dimensions[1], "Skeggy 3 Real??????!?!?", NULL, NULL);
 	if (!_window)
 	{
 		throw "Window failed to initialize";
