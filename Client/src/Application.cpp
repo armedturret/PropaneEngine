@@ -45,7 +45,7 @@ int PE::Application::run(int argc, char** argv)
 	}
 
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(0); //vsync enabled, set to 0 for no vsync
+	glfwSwapInterval(1); //vsync enabled, set to 0 for no vsync
 
 	Input::initializeCallbacks(_window);
 
@@ -154,9 +154,9 @@ int PE::Application::run(int argc, char** argv)
 			glm::vec3 position = _selectedObject->getTransform()->getPosition();
 			glm::vec3 rotation = glm::degrees(glm::eulerAngles(_selectedObject->getTransform()->getRotation()));
 			glm::vec3 scale = _selectedObject->getTransform()->getScale();
-			ImGui::DragFloat3("Position", &position[0], 0.1);
-			ImGui::DragFloat3("Rotation", &rotation[0], 0.1);
-			ImGui::DragFloat3("Scale", &scale[0], 0.1);
+			ImGui::DragFloat3("Position", &position[0], 0.1f);
+			ImGui::DragFloat3("Rotation", &rotation[0], 0.1f);
+			ImGui::DragFloat3("Scale", &scale[0], 0.1f);
 			_selectedObject->getTransform()->setPosition(position);
 			_selectedObject->getTransform()->setScale(scale);
 			_selectedObject->getTransform()->setRotation(glm::quat(glm::radians(rotation)));

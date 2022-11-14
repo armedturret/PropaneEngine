@@ -44,8 +44,12 @@ glm::vec3 PE::Transform::getScale() const
 
 void PE::Transform::setScale(glm::vec3 scale)
 {
-	if (scale == glm::vec3(0.0f))
-		scale = glm::vec3(0.00000000001f);
+	if (scale.x == 0.0f)
+		scale.x = 0.00000001f;
+	if (scale.y == 0.0f)
+		scale.y = 0.00000001f;
+	if (scale.z == 0.0f)
+		scale.z = 0.00000001f;
 
 	_scale = scale;
 
@@ -97,8 +101,12 @@ glm::vec3 PE::Transform::getLocalScale() const
 
 void PE::Transform::setLocalScale(glm::vec3 scale)
 {
-	if (scale == glm::vec3(0.0f))
-		scale = glm::vec3(0.00000000001f);
+	if (scale.x == 0.0f)
+		scale.x = 0.00000001f;
+	if (scale.y == 0.0f)
+		scale.y = 0.00000001f;
+	if (scale.z == 0.0f)
+		scale.z = 0.00000001f;
 
 	//update local position as well since this is affected
 	setLocalPosition(_localPosition);
