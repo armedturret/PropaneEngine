@@ -150,6 +150,15 @@ int PE::Application::run(int argc, char** argv)
 		if (_selectedObject != nullptr)
 		{
 			ImGui::Text(_selectedObject->getName().c_str());
+			glm::vec3 position = _selectedObject->getTransform()->getPosition();
+			glm::vec3 rotation = glm::degrees(glm::eulerAngles(_selectedObject->getTransform()->getRotation()));
+			glm::vec3 scale = _selectedObject->getTransform()->getScale();
+			ImGui::DragFloat3("Position", &position[0], 0.1);
+			ImGui::DragFloat3("Rotation", &rotation[0], 0.1);
+			ImGui::DragFloat3("Scale", &scale[0], 0.1);
+			_selectedObject->getTransform()->setPosition(position);
+			_selectedObject->getTransform()->setScale(scale);
+			_selectedObject->getTransform()->setRotation(glm::quat(glm::radians(rotation)));
 		}
 		ImGui::End();
 
