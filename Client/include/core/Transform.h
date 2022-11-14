@@ -56,6 +56,11 @@ namespace PE {
 		Transform* getParent();
 		std::vector<Transform*> getChildren();
 	private:
+		//sets variables assuming that the local variables have already been called
+		void updatePositionInternal(glm::vec3 newPos);
+		void updateScaleInternal(glm::vec3 scale);
+		void updateRotationInternal(glm::quat rotation);
+
 		int indexOfChild(Transform* child);
 		friend class GameObject;
 

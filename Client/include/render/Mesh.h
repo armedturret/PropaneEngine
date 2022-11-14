@@ -10,6 +10,17 @@ namespace PE {
 		glm::vec2 texCoord;
 	};
 
+	struct VertexWeight {
+		unsigned int index;
+		float weight;
+	};
+
+	struct Bone {
+		std::string name;
+
+		std::vector<VertexWeight> vertexWeights;
+	};
+
 	struct Mesh {
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;

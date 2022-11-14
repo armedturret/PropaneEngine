@@ -2,6 +2,8 @@
 
 #include "core/GameObject.h"
 
+#include <glm/gtx/matrix_decompose.hpp>
+
 PE::Transform::Transform() :
 	_position(0.0f),
 	_rotation(glm::vec3(0.0f)),
@@ -24,17 +26,12 @@ glm::vec3 PE::Transform::getPosition() const
 
 void PE::Transform::setPosition(glm::vec3 newPos)
 {
-	_position = newPos;
-
 	if (_parent != nullptr)
-		_localPosition = glm::inverse(_parent->getTransformMatrix()) * glm::vec4(_position, 1.0f);
+		_localPosition = glm::inverse(_parent->getTransformMatrix()) * glm::vec4(newPos, 1.0f);
 	else
-		_localPosition = _position;
+		_localPosition = newPos;
 
-	for (auto child : _children)
-		child->setLocalPosition(child->getLocalPosition());
-
-	_dirty = true;
+	updatePositionInternal(newPos);
 }
 
 glm::vec3 PE::Transform::getScale() const
@@ -51,17 +48,12 @@ void PE::Transform::setScale(glm::vec3 scale)
 	if (scale.z == 0.0f)
 		scale.z = 0.00000001f;
 
-	_scale = scale;
-
 	if (_parent != nullptr)
-		_localScale = glm::scale(glm::mat4(1.0f), 1.0f / _parent->getScale()) * glm::vec4(_scale, 1.0f);
+		_localScale = glm::scale(glm::mat4(1.0f), 1.0f / _parent->getScale()) * glm::vec4(scale, 1.0f);
 	else
-		_localScale = _scale;
+		_localScale = scale;
 
-	for (auto child : _children)
-		child->setLocalScale(child->getLocalScale());
-
-	_dirty = true;
+	updateScaleInternal(scale);
 }
 
 glm::quat PE::Transform::getRotation() const
@@ -71,17 +63,12 @@ glm::quat PE::Transform::getRotation() const
 
 void PE::Transform::setRotation(glm::quat rotation)
 {
-	_rotation = rotation;
-
 	if (_parent != nullptr)
-		_localRotation = glm::inverse(_parent->_rotation) * _rotation;
+		_localRotation = glm::inverse(_parent->_rotation) * rotation;
 	else
-		_localRotation = _rotation;
+		_localRotation = rotation;
 
-	for (auto child : _children)
-		child->setLocalRotation(child->getLocalRotation());
-
-	_dirty = true;
+	updateRotationInternal(rotation);
 }
 
 glm::vec3 PE::Transform::getLocalPosition() const
@@ -91,7 +78,8 @@ glm::vec3 PE::Transform::getLocalPosition() const
 
 void PE::Transform::setLocalPosition(glm::vec3 newPos)
 {
-	setPosition(_parent->getTransformMatrix()* glm::vec4(newPos, 1.0f));
+	_localPosition = newPos;
+	updatePositionInternal(_parent->getTransformMatrix()* glm::vec4(newPos, 1.0f));
 }
 
 glm::vec3 PE::Transform::getLocalScale() const
@@ -108,9 +96,8 @@ void PE::Transform::setLocalScale(glm::vec3 scale)
 	if (scale.z == 0.0f)
 		scale.z = 0.00000001f;
 
-	//update local position as well since this is affected
-	setLocalPosition(_localPosition);
-	setScale(glm::scale(glm::mat4(1.0f), _parent->getScale()) * glm::vec4(scale, 1.0f));
+	_localScale = scale;
+	updateScaleInternal(glm::scale(glm::mat4(1.0f), _parent->getScale()) * glm::vec4(scale, 1.0f));
 }
 
 glm::quat PE::Transform::getLocalRotation() const
@@ -120,9 +107,8 @@ glm::quat PE::Transform::getLocalRotation() const
 
 void PE::Transform::setLocalRotation(glm::quat rotation)
 {
-	//update local position as well since this is affected
-	setLocalPosition(_localPosition);
-	setRotation(_parent->getRotation() * rotation);
+	_localRotation = rotation;
+	updateRotationInternal(_parent->getRotation() * rotation);
 }
 
 glm::vec3 PE::Transform::getForward() const
@@ -157,6 +143,7 @@ glm::vec3 PE::Transform::getLeft() const
 
 glm::mat4 PE::Transform::getTransformMatrix()
 {
+	//recalculate transform matrix
 	if (_dirty)
 	{
 		_transform = glm::translate(glm::mat4(1.0f), _position);
@@ -171,9 +158,12 @@ glm::mat4 PE::Transform::getTransformMatrix()
 void PE::Transform::setRelativeTransformMatrix(glm::mat4 transform)
 {
 	//decompose the transform into local position, rotation, and scale
-	glm::vec3 translation = transform[3];
-	glm::vec3 scale = glm::vec3(transform[0].length(), transform[1].length(), transform[2].length());
-	glm::mat3 rotation = glm::mat3(transform[0] / scale[0], transform[1] / scale[1], transform[2] / scale[2]);
+	glm::vec3 translation;
+	glm::vec3 scale;
+	glm::quat rotation;
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(transform, scale, rotation, translation, skew, perspective);
 	setLocalPosition(translation);
 	setLocalScale(scale);
 	setLocalRotation(glm::quat(rotation));
@@ -220,6 +210,39 @@ PE::Transform* PE::Transform::getParent()
 std::vector<PE::Transform*> PE::Transform::getChildren()
 {
 	return _children;
+}
+
+void PE::Transform::updatePositionInternal(glm::vec3 newPos)
+{
+	_position = newPos;
+	_dirty = true;
+
+	for (auto child : _children)
+		child->setLocalPosition(child->getLocalPosition());
+}
+
+void PE::Transform::updateScaleInternal(glm::vec3 scale)
+{
+	_scale = scale;
+	_dirty = true;
+
+	for (auto child : _children)
+	{
+		child->setLocalScale(child->getLocalScale());
+		child->setLocalPosition(child->getLocalPosition());
+	}
+}
+
+void PE::Transform::updateRotationInternal(glm::quat rotation)
+{
+	_rotation = rotation;
+	_dirty = true;
+
+	for (auto child : _children)
+	{
+		child->setLocalRotation(child->getLocalRotation());
+		child->setLocalPosition(child->getLocalPosition());
+	}
 }
 
 int PE::Transform::indexOfChild(Transform* child)
