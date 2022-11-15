@@ -116,6 +116,9 @@ void PE::MeshRenderer::render(RenderContext* context)
 		glUniformMatrix4fv(boneTransformLoc, 1, GL_FALSE, glm::value_ptr(boneTransform));
 	}
 
+	int boneless = shader.getUniformLocation("boneless");
+	glUniform1i(boneless, _bonesInfo.size() == 0);
+
 	//draw all the bound indices
 	glDrawElements(GL_TRIANGLES, (GLsizei)_mesh.indices.size(), GL_UNSIGNED_INT, 0);
 
@@ -221,16 +224,17 @@ void PE::MeshRenderer::updateBones()
 	for (int i = 0; i < _bonesInfo.size(); i++)
 	{
 		//check if transform changed at all
-		//if (_bonesInfo[i].transform->getTransformMatrix() != _bonesInfo[i].lastTransform)
-		//{
+		if (_bonesInfo[i].transform->getTransformMatrix() != _bonesInfo[i].lastTransform)
+		{
 			//set transform to be relative to model armature root (inverse of that transform times this transform)
-		_boneTransforms[i] = inverseArmatureTransform * _bonesInfo[i].transform->getTransformMatrix();
-		//}
+			_boneTransforms[i] = inverseArmatureTransform * _bonesInfo[i].transform->getTransformMatrix();
+		}
 	}
 }
 
 void PE::MeshRenderer::updateBoneInfo()
 {
+	cout << "Finding bone info for object " << getGameObject()->getName() << endl;
 	for (int i = 0; i < _mesh.bones.size(); i++)
 	{
 		Bone bone = _mesh.bones[i];

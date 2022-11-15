@@ -88,11 +88,11 @@ void PE::Model::loadFromFile(std::string modelFile)
 			//add the vertex weights to corresponding vertices
 			for (unsigned int weightIdx = 0; weightIdx < mesh->mBones[boneIdx]->mNumWeights; weightIdx++)
 			{
-				aiVertexWeight* weight = mesh->mBones[boneIdx]->mWeights;
+				aiVertexWeight weight = mesh->mBones[boneIdx]->mWeights[weightIdx];
 				
 				//tell the vertex what bone influences them
-				verticesInfluences[weight->mVertexId].boneIndices.push_back(boneIdx);
-				verticesInfluences[weight->mVertexId].weights.push_back(weight->mWeight);
+				verticesInfluences[weight.mVertexId].boneIndices.push_back(boneIdx);
+				verticesInfluences[weight.mVertexId].weights.push_back(weight.mWeight);
 			}
 
 			meshData.bones.push_back(bone);
@@ -101,6 +101,17 @@ void PE::Model::loadFromFile(std::string modelFile)
 		//bake the influences data into the vertices
 		for (int iflIdx = 0; iflIdx < verticesInfluences.size(); iflIdx++)
 		{
+			if (iflIdx >= verticesInfluences.size())
+			{
+				//create dummy bone data
+				for (int j = 0; j < MAX_BONE_INFLUENCE; j++)
+				{
+					meshData.vertices[iflIdx].boneIds[j] = -1;
+					meshData.vertices[iflIdx].boneWeights[j] = 0.0f;
+				}
+				continue;
+			}
+
 			VertexInfluences influences = verticesInfluences[iflIdx];
 			for (int j = 0; j < MAX_BONE_INFLUENCE; j++)
 			{

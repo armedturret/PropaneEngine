@@ -13,6 +13,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform bool boneless;
+
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 bones[MAX_BONES];
@@ -22,9 +24,9 @@ void main()
 	
 	//accumulate bone influences (first check if any influences EXIST)
 	vec4 totalPosition = vec4(0.0f);
-	if(boneIds[0] == -1)
+	if(boneless)
 		totalPosition = vec4(pos, 1.0f);
-
+	
 	//add bone influence
 	for(int i = 0; i < MAX_BONE_INFLUENCE; i++)
 	{
