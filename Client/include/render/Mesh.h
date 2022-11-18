@@ -7,7 +7,7 @@ namespace PE {
 	//only 4 verts cann affect any bone
 	const int MAX_BONE_INFLUENCE = 4;
 	//max bones per mesh
-	const in MAX_BONES = 100;
+	const int MAX_BONES = 100;
 
 	struct Vertex {
 		glm::vec3 position;
