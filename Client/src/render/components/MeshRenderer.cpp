@@ -109,9 +109,11 @@ void PE::MeshRenderer::render(RenderContext* context)
 	}
 
 	//set bone transforms
-	for (size_t i = 0; i < _boneTransforms.size(); i++)
+	for (int i = 0; i < MAX_BONES; i++)
 	{
-		glm::mat4 boneTransform = _boneTransforms[i];
+		glm::mat4 boneTransform = glm::mat4(1.0f);
+		if (i < _boneTransforms.size())
+			boneTransform = _boneTransforms[i];
 		int boneTransformLoc = shader.getUniformLocation("bones[" + to_string(i) + "]");
 		glUniformMatrix4fv(boneTransformLoc, 1, GL_FALSE, glm::value_ptr(boneTransform));
 	}
