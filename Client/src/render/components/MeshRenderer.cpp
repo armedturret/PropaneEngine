@@ -231,7 +231,7 @@ void PE::MeshRenderer::updateBones()
 			//set transform to be relative to model armature root (inverse of that transform times this transform)
 			_boneTransforms[i] = inverseArmatureTransform * _bonesInfo[i].transform->getTransformMatrix();
 			//update last held transform to add update culling
-			_bonesInfo[i].transform->getTransformMatrix() = _bonesInfo[i].lastTransform;
+			_bonesInfo[i].lastTransform = _bonesInfo[i].transform->getTransformMatrix();
 		}
 	}
 }
